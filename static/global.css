@@ -1,0 +1,59 @@
+@font-face {
+  font-family: "Input";
+  src: url("fonts/input/InputMono-ExtraLight.ttf") format("truetype");
+  font-weight: lighter;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Input";
+  src: url("fonts/input/InputMono-Light.ttf") format("truetype");
+  font-weight: light;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Input";
+  src: url("fonts/input/InputMono-Thin.ttf") format("truetype");
+  font-weight: thin;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Input";
+  src: url("fonts/input/InputMono-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Input";
+  src: url("fonts/input/InputMono-Medium.ttf") format("truetype");
+  font-weight: medium;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Input";
+  src: url("fonts/input/InputMono-Bold.ttf") format("truetype");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Input";
+  src: url("fonts/input/InputMono-Black.ttf") format("truetype");
+  font-weight: bolder;
+  font-style: normal;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  font-family: Hack;
+  background-color: rgb(21, 21, 21);
+  color: white;
+}

@@ -1,0 +1,115 @@
+import type Commit from "./models/commits";
+import type FullStats from "./models/full_stats";
+import type Repository from "./models/repository";
+
+// calculateTotals calculates statistics over the total commits
+export default function calculateTotals(repos: Array<Repository>): FullStats {
+  let fullStats: FullStats = {
+    allReposWorkedIn: [],
+    totalCommits: 0,
+    totalAdditions: 0,
+    totalDeletions: 0,
+    totalAdditionsAndDeletionsPerLanguage: {},
+    mostAdditionsInDay: 0,
+    mostDeletionsInDay: 0,
+    mostCommitsInDay: 0,
+    dateWithMostAdditions: "",
+    dateWithMostDeletions: "",
+    dateWithMostCommits: "",
+    perDay: {},
+    datesRepoWasActive: {},
+    languageStatsPerRepo: {},
+  };
+
+  // Populate the perDay data with every date in the past year
+  let yearAgo = new Date();
+  yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+
+  // ! This needs to be removed, as this is just because of the mock data
+  for (
+    let i = new Date();
+    i >= yearAgo;
+    i.setTime(i.getTime() - 24 * 3600 * 1000)
+  ) {
+    const d = i.toISOString().split("T")[0];
+    fullStats.perDay[d] = {
+      additions: 0,
+      deletions: 0,
+      commits: 0,
+      perLanguage: {},
+      reposWorkedIn: new Set<string>(),
+    };
+  }
+
+  const reposWorkedIn: Set<string> = new Set<string>();
+
+  // Go over all repos and calculate totals
+  repos.forEach((r) => {
+    fullStats.totalCommits += r.totalCommits ?? 0;
+    fullStats.totalAdditions += r.totalAdditions ?? 0;
+    fullStats.totalDeletions += r.totalDeletions ?? 0;
+
+    // Set dates this repo was active
+    fullStats.datesRepoWasActive[r.name] = r.activeDates ?? [];
+
+    // Set the language stats for this repo
+    fullStats.languageStatsPerRepo[r.name] =
+      r.totalAdditionsAndDeletionsPerLanguage!;
+
+    // Update all language stats
+    for (let lang in r.totalAdditionsAndDeletionsPerLanguage) {
+      if (fullStats.totalAdditionsAndDeletionsPerLanguage[lang]) {
+        fullStats.totalAdditionsAndDeletionsPerLanguage[lang].additions +=
+          r.totalAdditionsAndDeletionsPerLanguage[lang].additions;
+        fullStats.totalAdditionsAndDeletionsPerLanguage[lang].deletions +=
+          r.totalAdditionsAndDeletionsPerLanguage[lang].deletions;
+        fullStats.totalAdditionsAndDeletionsPerLanguage[lang].commits! +=
+          r.totalAdditionsAndDeletionsPerLanguage[lang].commits!;
+      } else {
+        fullStats.totalAdditionsAndDeletionsPerLanguage[lang] = {
+          additions: r.totalAdditionsAndDeletionsPerLanguage[lang].additions,
+          deletions: r.totalAdditionsAndDeletionsPerLanguage[lang].deletions,
+          commits: r.totalAdditionsAndDeletionsPerLanguage[lang].commits,
+        };
+      }
+    }
+
+    // Update the day-by-day stats
+    for (let date in r.statsPerDate) {
+      const repoDayStats = r.statsPerDate[date];
+      const fullDayStats = fullStats.perDay[date];
+      fullDayStats.commits += repoDayStats.commits;
+      fullDayStats.additions += repoDayStats.additions;
+      fullDayStats.deletions += repoDayStats.deletions;
+      fullDayStats.reposWorkedIn!.add(r.name);
+      reposWorkedIn.add(r.name);
+
+      for (let lang in repoDayStats.perLanguage) {
+        fullDayStats.perLanguage[lang] = repoDayStats.perLanguage[lang];
+      }
+    }
+  });
+
+  // Calculate true global maximum additions, deletions, commits etc based on the day-by-day info
+  for (let date in fullStats.perDay) {
+    const d = fullStats.perDay[date];
+    if (d.additions > fullStats.mostAdditionsInDay) {
+      fullStats.mostAdditionsInDay = d.additions;
+      fullStats.dateWithMostAdditions = date;
+    }
+
+    if (d.deletions > fullStats.mostDeletionsInDay) {
+      fullStats.mostDeletionsInDay = d.deletions;
+      fullStats.dateWithMostDeletions = date;
+    }
+
+    if (d.commits > fullStats.mostCommitsInDay) {
+      fullStats.mostCommitsInDay = d.commits;
+      fullStats.dateWithMostCommits = date;
+    }
+  }
+
+  fullStats.allReposWorkedIn = Array.from(reposWorkedIn);
+
+  return fullStats;
+}
