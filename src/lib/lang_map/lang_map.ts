@@ -359,6 +359,9 @@ export const langMap: Record<string, string[]> = {
   "_coffee": [
     "coffeescript"
   ],
+  "cjs": [
+    "CommonJS"
+  ],
   "cjsx": [
     "coffeescript"
   ],
@@ -1839,6 +1842,9 @@ export const langMap: Record<string, string[]> = {
   ],
   "svg": [
     "svg"
+  ],
+  "svelte": [
+    "svelte"
   ],
   "sage": [
     "sage"

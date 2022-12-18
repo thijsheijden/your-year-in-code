@@ -3,7 +3,7 @@ import type Commit from "./models/commits";
 import type Repository from "./models/repository";
 import type Stats from "./models/stats";
 import type Sentiment from "sentiment";
-// import langMap from "lang-map";
+import { langMap } from "$lib/lang_map/lang_map";
 
 // getCommitDetails gets the details for a commit using its SHA
 export default function getCommitDetails(
@@ -11,7 +11,7 @@ export default function getCommitDetails(
   repository: Repository,
   sha: string,
   sentiment: Sentiment,
-  language: string
+  userLanguage: string
 ): Promise<Commit> {
   return new Promise<Commit>((resolve, reject) => {
     client.rest.repos
@@ -32,19 +32,15 @@ export default function getCommitDetails(
         // Go over the modified files and update the record with +/- per language
         updatedFiles.forEach((f) => {
           // If the update has 0 additions AND deletions, skip it
-          if (f.additions == 0 && f.deletions == 0) {
-            return;
-          }
+          if (f.additions == 0 && f.deletions == 0) return;
 
           // Get file extensions
           const fileNameAndExtension: Array<string> = f.filename.split(".");
-          if (fileNameAndExtension.length == 1) {
-            // File had no extension
-            return;
-          }
+          if (fileNameAndExtension.length == 1) return;
 
           // Grab the extension from the filename + extension list
           const fileExtension = fileNameAndExtension.pop();
+          if (fileExtension == undefined) return;
 
           // Ignore exe, bin and json files, because they are often massive and contain no real code
           if (
@@ -53,13 +49,14 @@ export default function getCommitDetails(
             fileExtension == "json" ||
             fileExtension == "sum" ||
             fileExtension == "mod"
-          ) {
+          ) return;
+
+          // Get programming language using extension
+          if (langMap[fileExtension] == undefined) {
+            console.log(fileExtension + " is not in the lang map");
             return;
           }
-
-          // TODO: Copy lang map from Github and adjust (add TS, remove all non-programming languages)
-          // Get programming language using extension
-          // const language = langMap.languages(fileExtension)[0];
+          const language = langMap[fileExtension!][0];
 
           // Init stats value if language is not present yet
           if (!statsPerLanguage[language]) {
@@ -76,7 +73,7 @@ export default function getCommitDetails(
 
         // Calculate sentiment
         const sentimentResult = sentiment.analyze(data.commit.message, {
-          language: language,
+          language: userLanguage,
         });
 
         resolve({

@@ -100,7 +100,7 @@
         return getCommitSHAsForAllActiveRepos(
           ghClient,
           authenticatedUser.username,
-          activeRepos
+          activeRepos.splice(1, activeRepos.length - 1)
         );
       })
       .then((activeReposWithCommitSHAs: Array<Repository>) => {

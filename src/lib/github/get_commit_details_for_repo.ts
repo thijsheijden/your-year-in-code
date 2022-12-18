@@ -11,14 +11,14 @@ import type Stats from "./models/stats";
 export default function getCommitDetailsForRepo(
   client: Octokit,
   repo: Repository,
-  language: string,
+  userLanguage: string,
   sentiment: Sentiment
 ): Promise<Repository> {
   return new Promise<Repository>((resolve, reject) => {
     // Go over all commit SHAs and fetch the details
     Promise.all(
       repo.commitSHAs!.map((sha: string) =>
-        getCommitDetails(client, repo, sha, sentiment, language)
+        getCommitDetails(client, repo, sha, sentiment, userLanguage)
       )
     ).then((commits: Array<Commit>) => {
       // Add the commits to the repo object
@@ -102,8 +102,6 @@ export default function getCommitDetailsForRepo(
         totalAdditionsAndDeletionsPerLanguage;
       repo.statsPerDate = statsPerDate;
       repo.activeDates = Array.from(datesRepoWasActive.values());
-
-      console.log(repo.totalAdditionsAndDeletionsPerLanguage);
 
       resolve(repo);
     });
