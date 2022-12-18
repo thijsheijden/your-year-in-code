@@ -75,12 +75,12 @@
   const receiveMessage = (e: MessageEvent<string>) => {
     // Do we trust the sender of this message? (might be
     // different from what we originally opened, for example).
-    if (e.origin !== "http://dev.youryearincode.com:5173") {
+    if (!e.isTrusted || e.origin !== "http://dev.youryearincode.com:5173") {
       return;
     }
 
     // Redirect user to the stats page, add the access token as query parameter
-    goto("/rewind?access_token=" + e.data);
+    goto("/load?access_token=" + e.data);
   };
 </script>
 
@@ -89,14 +89,14 @@
   <div id="content_flex_container">
     <div id="content">
       <div id="content_padded">
-        <h1>YOUR_YEAR_IN_CODE</h1>
+        <h1>YOUR_YEAR_IN_CODE;</h1>
         <h2>Like Spotify wrapped, but for code.</h2>
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <a id="login_button" on:click={openOAuthWindow}>Log in using Github</a>
 
         <h5 style="padding-top: 2em;">
           {#if score > 0}
-            Score: {score}
+            Boxes destroyed: {score}
           {/if}
         </h5>
       </div>
