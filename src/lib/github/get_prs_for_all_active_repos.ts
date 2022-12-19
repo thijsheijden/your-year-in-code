@@ -45,6 +45,7 @@ function getPRsForRepo(
         let finalPRObjects: PR[] = [];
 
         filteredResult.forEach((pr) => {
+          console.log(pr);
           // Create the PR object
           let prObject: PR = {
             number: pr.number,

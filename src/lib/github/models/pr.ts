@@ -1,4 +1,5 @@
 import type Commit from "./commits";
+import type PRReview from "./pr_review";
 
 type PR = {
   // Fields present on data returned from Github
@@ -10,6 +11,7 @@ type PR = {
   // Computed properties
   created_by_user?: boolean,
   merge_commit?: Commit,
+  reviews?: PRReview[] // Reviews of PR
 }
 
 export default PR;

@@ -7,6 +7,7 @@
   import getCommitSHAsForAllActiveRepos from "$lib/github/get_commit_SHAs_for_all_active_repos";
   import getCurrentUser from "$lib/github/get_current_user";
   import getPRsForRepo from "$lib/github/get_prs_for_all_active_repos";
+  import getReviewsOnAllRepoPRs from "$lib/github/get_reviews_on_pr";
   import type FullStats from "$lib/github/models/full_stats";
   import type PR from "$lib/github/models/pr";
   import type Repository from "$lib/github/models/repository";
@@ -139,19 +140,16 @@
     }
 
     // console.log(fullStats);
-    getActiveRepos(ghClient)
-      .then((repos: Repository[]) =>
-        getPRsForRepo(ghClient, "thijsheijden", repos)
+    getActiveRepos(ghClient).then((repos: Repository[]) =>
+      getPRsForRepo(ghClient, "thijsheijden", repos).then(
+        (repos: Repository[]) => {
+          repos.forEach((r) =>
+            getReviewsOnAllRepoPRs(ghClient, "thijsheijden", r)
+          )
+          console.log(repos)
+        }
       )
-      .then((repos: Repository[]) => console.log(repos));
-    // getPRsForRepo(ghClient, "thijsheijden", {
-    //   name: "website",
-    //   owner: "Swift-Software-LLC",
-    //   id: 1,
-    //   node_id: "",
-    //   pushed_at: ""
-    // }).then((result: PR[]) => {
-    // })
+    );
   });
 </script>
 
