@@ -11,14 +11,12 @@ import type Stats from "./models/stats";
 export default function getCommitDetailsForRepo(
   client: Octokit,
   repo: Repository,
-  userLanguage: string,
-  sentiment: Sentiment
 ): Promise<Repository> {
   return new Promise<Repository>((resolve, reject) => {
     // Go over all commit SHAs and fetch the details
     Promise.all(
       repo.commitSHAs!.map((sha: string) =>
-        getCommitDetails(client, repo, sha, sentiment, userLanguage)
+        getCommitDetails(client, repo, sha)
       )
     ).then((commits: Array<Commit>) => {
       // Add the commits to the repo object

@@ -6,7 +6,9 @@
   import getCommitDetailsForRepo from "$lib/github/get_commit_details_for_repo";
   import getCommitSHAsForAllActiveRepos from "$lib/github/get_commit_SHAs_for_all_active_repos";
   import getCurrentUser from "$lib/github/get_current_user";
+  import getPRsForRepo from "$lib/github/get_prs_for_all_active_repos";
   import type FullStats from "$lib/github/models/full_stats";
+  import type PR from "$lib/github/models/pr";
   import type Repository from "$lib/github/models/repository";
   import type User from "$lib/github/models/user";
   import { Octokit } from "octokit";
@@ -19,19 +21,6 @@
 
   // The authenticated user
   let authenticatedUser: User;
-
-  // Sentiment analysis client
-  const sentimentClient = new Sentiment();
-
-  // Get the users language from browser
-  // Trim and split it to get just the language code, not region
-  const lang = (
-    navigator.languages === undefined
-      ? [navigator.language]
-      : navigator.languages
-  )[0]
-    .trim()
-    .split(/-|_/)[0];
 
   type loadingStep = {
     label: string;
@@ -96,7 +85,7 @@
   const loadAllData = async () => {
     getActiveRepos(ghClient)
       .then((activeRepos: Array<Repository>) => {
-        nextStep()
+        nextStep();
         return getCommitSHAsForAllActiveRepos(
           ghClient,
           authenticatedUser.username,
@@ -106,14 +95,14 @@
       .then((activeReposWithCommitSHAs: Array<Repository>) => {
         return Promise.all(
           activeReposWithCommitSHAs.map((r) => {
-            return getCommitDetailsForRepo(ghClient, r, lang, sentimentClient);
+            return getCommitDetailsForRepo(ghClient, r);
           })
         );
       })
       .then((activeReposWithCommits: Array<Repository>) => {
         nextStep();
         const fullStats = calculateTotals(activeReposWithCommits);
-        
+
         // Add the resulting object to the local storage
         statsStore.set(fullStats);
       });
@@ -141,15 +130,28 @@
     let fullStats: FullStats;
     if ($statsStore == null) {
       // Load all data (store is empty)
-      console.log("FullStats not in store")
+      console.log("FullStats not in store");
       await loadAllData();
-      fullStats = $statsStore!
+      fullStats = $statsStore!;
     } else {
-      console.log("FullStats being loaded from store")
-      fullStats = $statsStore!
+      console.log("FullStats being loaded from store");
+      fullStats = $statsStore!;
     }
 
-    console.log(fullStats);
+    // console.log(fullStats);
+    getActiveRepos(ghClient)
+      .then((repos: Repository[]) =>
+        getPRsForRepo(ghClient, "thijsheijden", repos)
+      )
+      .then((repos: Repository[]) => console.log(repos));
+    // getPRsForRepo(ghClient, "thijsheijden", {
+    //   name: "website",
+    //   owner: "Swift-Software-LLC",
+    //   id: 1,
+    //   node_id: "",
+    //   pushed_at: ""
+    // }).then((result: PR[]) => {
+    // })
   });
 </script>
 

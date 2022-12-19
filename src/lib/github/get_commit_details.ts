@@ -10,8 +10,6 @@ export default function getCommitDetails(
   client: Octokit,
   repository: Repository,
   sha: string,
-  sentiment: Sentiment,
-  userLanguage: string
 ): Promise<Commit> {
   return new Promise<Commit>((resolve, reject) => {
     client.rest.repos
@@ -71,11 +69,6 @@ export default function getCommitDetails(
           statsPerLanguage[language].deletions += f.deletions;
         });
 
-        // Calculate sentiment
-        const sentimentResult = sentiment.analyze(data.commit.message, {
-          language: userLanguage,
-        });
-
         resolve({
           sha: sha,
           additions: data.stats.additions,
@@ -83,7 +76,6 @@ export default function getCommitDetails(
           date: data.commit.author.date,
           message: data.commit.message,
           statsPerLanguage: statsPerLanguage,
-          sentiment: sentimentResult.comparative,
         });
       });
   });

@@ -22,10 +22,6 @@ export default function getCommitSHAsByUserInRepository(
         author: user,
       })
       .then((result: Array<any>) => {
-
-        console.log(repository.name);
-        console.log(result);
-
         repository.commitSHAs = result.map((c) => {
           return c.sha;
         });

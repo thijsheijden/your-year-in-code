@@ -1,5 +1,6 @@
 import type Commit from "./commits";
 import type DayStats from "./day_stats";
+import type PR from "./pr";
 import type Stats from "./stats";
 
 type Repository = {
@@ -20,6 +21,9 @@ type Repository = {
 
   // Dates the user was active in this repo
   activeDates?: Array<string>;
+
+  // PR fields
+  PRsInRepo?: PR[];
 };
 
 export default Repository;

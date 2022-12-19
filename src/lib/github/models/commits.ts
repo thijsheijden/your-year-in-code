@@ -7,7 +7,6 @@ type Commit = {
   date: string;
   message: string;
   statsPerLanguage: Record<string, Stats>;
-  sentiment: number;
 };
 
 export default Commit;
