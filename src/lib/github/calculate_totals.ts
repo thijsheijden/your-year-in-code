@@ -1,6 +1,7 @@
 import type Commit from "./models/commits";
 import type FullStats from "./models/full_stats";
 import type Repository from "./models/repository";
+import type Stats from "./models/stats";
 
 // calculateTotals calculates statistics over the total commits
 export default function calculateTotals(repos: Array<Repository>): FullStats {
@@ -10,6 +11,17 @@ export default function calculateTotals(repos: Array<Repository>): FullStats {
     totalAdditions: 0,
     totalDeletions: 0,
     totalAdditionsAndDeletionsPerLanguage: {},
+    numberOfLanguagesUsed: 0,
+    mostLovedLanguage: "",
+    mostLovedLanguageStats: {
+      additions: 0,
+      deletions: 0,
+    },
+    leastLovedLanguage: "",
+    leastLovedLanguageStats: {
+      additions: 0,
+      deletions: 0,
+    },
     mostAdditionsInDay: 0,
     mostDeletionsInDay: 0,
     mostCommitsInDay: 0,
@@ -19,6 +31,26 @@ export default function calculateTotals(repos: Array<Repository>): FullStats {
     perDay: {},
     datesRepoWasActive: {},
     languageStatsPerRepo: {},
+    totalPRsOpened: 0,
+    totalPRsMerged: 0,
+    totalPRsReviewed: 0,
+    totalCommentsLeft: 0,
+    largestPRMergedAdditions: 0,
+    largestPRMergedDeletions: 0,
+    smallestPRMergedAdditions: 0,
+    smallestPRMergedDeletions: 0,
+    largestPRReviewedAdditions: 0,
+    largestPRReviewedDeletions: 0,
+    smallestPRReviewedAdditions: 0,
+    smallestPRReviewedDeletions: 0,
+    mostPRsMergedInDay: 0,
+    mostCommentsLeftInADay: 0,
+    dateWithMostPRsMerged: "",
+    dateWithMostPRsReviewed: "",
+    dateWithLargestPRMerged: "",
+    dateWithSmallestPRMerged: "",
+    dateWithLargestPRReviewed: "",
+    dateWithSmallestPRReviewed: "",
   };
 
   // Populate the perDay data with every date in the past year
@@ -38,6 +70,10 @@ export default function calculateTotals(repos: Array<Repository>): FullStats {
       commits: 0,
       perLanguage: {},
       reposWorkedIn: new Set<string>(),
+      PRsCreated: 0,
+      PRsMerged: 0,
+      PRsReviewed: 0,
+      commentsWritten: 0,
     };
   }
 
@@ -108,6 +144,32 @@ export default function calculateTotals(repos: Array<Repository>): FullStats {
       fullStats.dateWithMostCommits = date;
     }
   }
+
+  // Calculate number of languages used
+  fullStats.numberOfLanguagesUsed = Object.keys(
+    fullStats.totalAdditionsAndDeletionsPerLanguage
+  ).length;
+
+  // Get most loved, and least loved languages
+  let mostLovedLang: string, leastLovedLang: string;
+  let mostLangChanges: number = 0, leastLangChanges: number = Number.MAX_SAFE_INTEGER;
+  for (let lang in fullStats.totalAdditionsAndDeletionsPerLanguage) {
+    let langStats = fullStats.totalAdditionsAndDeletionsPerLanguage[lang];
+
+    if (langStats.additions + langStats.deletions > mostLangChanges) {
+      mostLovedLang = lang;
+      mostLangChanges = langStats.additions + langStats.deletions;
+    }
+
+    if (langStats.additions + langStats.deletions < leastLangChanges) {
+      leastLovedLang = lang;
+      leastLangChanges = langStats.additions + langStats.deletions;
+    }
+  }
+  fullStats.mostLovedLanguage = mostLovedLang!;
+  fullStats.mostLovedLanguageStats = fullStats.totalAdditionsAndDeletionsPerLanguage[mostLovedLang!];
+  fullStats.leastLovedLanguage = leastLovedLang!;
+  fullStats.leastLovedLanguageStats = fullStats.totalAdditionsAndDeletionsPerLanguage[leastLovedLang!];
 
   fullStats.allReposWorkedIn = Array.from(reposWorkedIn);
 

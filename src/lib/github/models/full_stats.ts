@@ -5,6 +5,15 @@ type FullStats = {
   totalCommits: number;
   totalAdditions: number;
   totalDeletions: number;
+  totalPRsOpened?: number;
+  totalPRsMerged?: number;
+  totalPRsReviewed?: number;
+  totalCommentsLeft?: number;
+  numberOfLanguagesUsed: number;
+  mostLovedLanguage: string,
+  mostLovedLanguageStats: Stats,
+  leastLovedLanguage: string,
+  leastLovedLanguageStats: Stats,
   totalAdditionsAndDeletionsPerLanguage: Record<string, Stats>;
   allReposWorkedIn: Array<string>;
   languageStatsPerRepo: Record<string, Record<string, Stats>>; // Repo name -> language -> stats
@@ -13,11 +22,27 @@ type FullStats = {
   mostAdditionsInDay: number;
   mostDeletionsInDay: number;
   mostCommitsInDay: number;
+  largestPRMergedAdditions?: number;
+  largestPRMergedDeletions?: number;
+  smallestPRMergedAdditions?: number;
+  smallestPRMergedDeletions?: number;
+  largestPRReviewedAdditions?: number;
+  largestPRReviewedDeletions?: number;
+  smallestPRReviewedAdditions?: number;
+  smallestPRReviewedDeletions?: number;
+  mostPRsMergedInDay?: number;
+  mostCommentsLeftInADay?: number;
 
   // Date strings;
   dateWithMostAdditions: string;
   dateWithMostDeletions: string;
   dateWithMostCommits: string;
+  dateWithMostPRsMerged?: string;
+  dateWithMostPRsReviewed?: string;
+  dateWithLargestPRMerged?: string;
+  dateWithSmallestPRMerged?: string;
+  dateWithLargestPRReviewed?: string;
+  dateWithSmallestPRReviewed?: string;
 
   // All dates with their stats
   perDay: Record<string, DayStats>; // Date string YYYY-MM-DD is key

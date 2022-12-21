@@ -22,8 +22,27 @@ type Repository = {
   // Dates the user was active in this repo
   activeDates?: Array<string>;
 
-  // PR fields
-  PRsInRepo?: PR[];
+  // PR info
+  largestPRMergedAdditions: number;
+  largestPRMergedDeletions: number;
+  smallestPRMergedAdditions: number;
+  smallestPRMergedDeletions: number;
+  largestPRReviewedAdditions: number;
+  largestPRReviewedDeletions: number;
+  smallestPRReviewedAdditions: number;
+  smallestPRReviewedDeletions: number;
+  mostPRsMergedInDay: number;
+
+  // PR dates
+  dateWithMostPRsMerged: string;
+  dateWithMostPRsReviewed: string;
+  dateWithLargestPRMerged: string;
+  dateWithSmallestPRMerged: string;
+  dateWithLargestPRReviewed: string;
+  dateWithSmallestPRReviewed: string;
+
+  // Comment info
+  mostCommentsLeftInADay: number;
 };
 
 export default Repository;

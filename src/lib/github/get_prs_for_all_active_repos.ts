@@ -45,7 +45,6 @@ function getPRsForRepo(
         let finalPRObjects: PR[] = [];
 
         filteredResult.forEach((pr) => {
-          console.log(pr);
           // Create the PR object
           let prObject: PR = {
             number: pr.number,
@@ -73,9 +72,6 @@ function getPRsForRepo(
             // Add to list
             finalPRObjects.push(prObject);
         });
-
-        // Add the list of PRs to the repository object
-        repo.PRsInRepo = finalPRObjects;
 
         resolve(repo);
       });
