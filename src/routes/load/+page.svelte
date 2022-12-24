@@ -120,6 +120,8 @@
       .then((activeRepos: Array<Repository>) => {
         nextStep();
 
+        console.log(activeRepos);
+
         // TODO: Load all comments the user made
         return activeRepos;
       })

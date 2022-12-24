@@ -1,14 +1,16 @@
 import type DayStats from "./day_stats";
+import type PR from "./pr";
 import type Stats from "./stats";
 
 type FullStats = {
   totalCommits: number;
   totalAdditions: number;
   totalDeletions: number;
-  totalPRsOpened?: number;
-  totalPRsMerged?: number;
-  totalPRsReviewed?: number;
-  totalCommentsLeft?: number;
+  totalPRsOpened: number;
+  totalPRsMerged: number;
+  totalPRChanges: number;
+  totalPRsReviewed: number;
+  totalPRChangesReviewed: number;
   numberOfLanguagesUsed: number;
   mostLovedLanguage: string,
   mostLovedLanguageStats: Stats,
@@ -22,16 +24,12 @@ type FullStats = {
   mostAdditionsInDay: number;
   mostDeletionsInDay: number;
   mostCommitsInDay: number;
-  largestPRMergedAdditions?: number;
-  largestPRMergedDeletions?: number;
-  smallestPRMergedAdditions?: number;
-  smallestPRMergedDeletions?: number;
-  largestPRReviewedAdditions?: number;
-  largestPRReviewedDeletions?: number;
-  smallestPRReviewedAdditions?: number;
-  smallestPRReviewedDeletions?: number;
-  mostPRsMergedInDay?: number;
-  mostCommentsLeftInADay?: number;
+  largestPROpened?: PR;
+  smallestPROpened?: PR;
+  largestPRMerged?: PR;
+  smallestPRMerged?: PR;
+  largestPRReviewed?: PR;
+  smallestPRReviewed?: PR;
 
   // Date strings;
   dateWithMostAdditions: string;

@@ -21,6 +21,12 @@ const getActiveRepos = (client: Octokit): Promise<Array<Repository>> => {
               node_id: r.node_id,
               pushed_at: r.pushed_at,
               owner: r.owner.login,
+              PRs: [],
+              totalPRsOpened: 0,
+              totalPRsMerged: 0,
+              totalPRsReviewed: 0,
+              totalMergedPRChanges: 0,
+              totalReviewedPRChanges: 0,
             };
           })
         );

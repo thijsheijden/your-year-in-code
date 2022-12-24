@@ -24,26 +24,17 @@ type Repository = {
 
   // PR info
   PRs: PR[];
-  largestPRMergedAdditions: number;
-  largestPRMergedDeletions: number;
-  smallestPRMergedAdditions: number;
-  smallestPRMergedDeletions: number;
-  largestPRReviewedAdditions: number;
-  largestPRReviewedDeletions: number;
-  smallestPRReviewedAdditions: number;
-  smallestPRReviewedDeletions: number;
-  mostPRsMergedInDay: number;
-
-  // PR dates
-  dateWithMostPRsMerged: string;
-  dateWithMostPRsReviewed: string;
-  dateWithLargestPRMerged: string;
-  dateWithSmallestPRMerged: string;
-  dateWithLargestPRReviewed: string;
-  dateWithSmallestPRReviewed: string;
-
-  // Comment info
-  mostCommentsLeftInADay: number;
+  totalPRsOpened: number;
+  totalPRsMerged: number;
+  totalPRsReviewed: number;
+  totalMergedPRChanges: number;
+  totalReviewedPRChanges: number;
+  largestPROpened?: PR;
+  smallestPROpened?: PR;
+  largestPRMerged?: PR;
+  smallestPRMerged?: PR;
+  largestPRReviewed?: PR;
+  smallestPRReviewed?: PR;
 };
 
 export default Repository;

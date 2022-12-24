@@ -33,18 +33,9 @@ export default function calculateTotals(repos: Array<Repository>): FullStats {
     languageStatsPerRepo: {},
     totalPRsOpened: 0,
     totalPRsMerged: 0,
+    totalPRChanges: 0,
     totalPRsReviewed: 0,
-    totalCommentsLeft: 0,
-    largestPRMergedAdditions: 0,
-    largestPRMergedDeletions: 0,
-    smallestPRMergedAdditions: 0,
-    smallestPRMergedDeletions: 0,
-    largestPRReviewedAdditions: 0,
-    largestPRReviewedDeletions: 0,
-    smallestPRReviewedAdditions: 0,
-    smallestPRReviewedDeletions: 0,
-    mostPRsMergedInDay: 0,
-    mostCommentsLeftInADay: 0,
+    totalPRChangesReviewed: 0,
     dateWithMostPRsMerged: "",
     dateWithMostPRsReviewed: "",
     dateWithLargestPRMerged: "",
@@ -84,6 +75,11 @@ export default function calculateTotals(repos: Array<Repository>): FullStats {
     fullStats.totalCommits += r.totalCommits ?? 0;
     fullStats.totalAdditions += r.totalAdditions ?? 0;
     fullStats.totalDeletions += r.totalDeletions ?? 0;
+    fullStats.totalPRsOpened += r.totalPRsOpened;
+    fullStats.totalPRsMerged += r.totalPRsMerged;
+    fullStats.totalPRChanges += r.totalMergedPRChanges;
+    fullStats.totalPRsReviewed += r.totalPRsReviewed;
+    fullStats.totalPRChangesReviewed += r.totalReviewedPRChanges;
 
     // Set dates this repo was active
     fullStats.datesRepoWasActive[r.name] = r.activeDates ?? [];
@@ -152,7 +148,8 @@ export default function calculateTotals(repos: Array<Repository>): FullStats {
 
   // Get most loved, and least loved languages
   let mostLovedLang: string, leastLovedLang: string;
-  let mostLangChanges: number = 0, leastLangChanges: number = Number.MAX_SAFE_INTEGER;
+  let mostLangChanges: number = 0,
+    leastLangChanges: number = Number.MAX_SAFE_INTEGER;
   for (let lang in fullStats.totalAdditionsAndDeletionsPerLanguage) {
     let langStats = fullStats.totalAdditionsAndDeletionsPerLanguage[lang];
 
@@ -167,9 +164,11 @@ export default function calculateTotals(repos: Array<Repository>): FullStats {
     }
   }
   fullStats.mostLovedLanguage = mostLovedLang!;
-  fullStats.mostLovedLanguageStats = fullStats.totalAdditionsAndDeletionsPerLanguage[mostLovedLang!];
+  fullStats.mostLovedLanguageStats =
+    fullStats.totalAdditionsAndDeletionsPerLanguage[mostLovedLang!];
   fullStats.leastLovedLanguage = leastLovedLang!;
-  fullStats.leastLovedLanguageStats = fullStats.totalAdditionsAndDeletionsPerLanguage[leastLovedLang!];
+  fullStats.leastLovedLanguageStats =
+    fullStats.totalAdditionsAndDeletionsPerLanguage[leastLovedLang!];
 
   fullStats.allReposWorkedIn = Array.from(reposWorkedIn);
 

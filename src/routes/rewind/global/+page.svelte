@@ -106,13 +106,13 @@
           <div class="stat_card">
             <div class="stat_card_content">
               <h3>Merged</h3>
-              <h4 style="color: rgb(137, 87, 229);">{fullStats.totalPRsMerged}</h4>
+              <h4 style="color: rgb(137, 87, 229);">{fullStats.totalPRsMerged} ({fullStats.totalPRChanges} changes)</h4>
             </div>
           </div>
           <div class="stat_card">
             <div class="stat_card_content">
               <h3>Reviewed</h3>
-              <h4 style="color: #5FC9F8;">{fullStats.totalPRsReviewed}</h4>
+              <h4 style="color: #5FC9F8;">{fullStats.totalPRsReviewed} ({fullStats.totalPRChangesReviewed} changes)</h4>
             </div>
           </div>
         </div>
