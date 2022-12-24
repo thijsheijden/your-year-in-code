@@ -142,6 +142,7 @@
     statsStore.set(null);
   }
 
+
   let accessToken: string | null;
   onMount(async () => {
     // Grab the access token from the query parameters

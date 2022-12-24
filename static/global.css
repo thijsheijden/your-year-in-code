@@ -50,6 +50,9 @@
 * {
   padding: 0;
   margin: 0;
+  --commit-color: #5FC9F8;
+  --additions-color: #39D353;
+  --deletions-color: #FF6961;
 }
 
 html {

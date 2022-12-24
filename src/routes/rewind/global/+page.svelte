@@ -15,11 +15,17 @@
       goto("/");
     } else {
       fullStats = $statsStore!;
-      console.log(fullStats);
     }
   });
+
+  const moveToNextPage = (e: KeyboardEvent) => {
+    if (e.key == "ArrowRight") {
+      goto("/rewind/languages")
+    }
+  }
 </script>
 
+<svelte:window on:keydown={moveToNextPage}/>
 <main>
   <div id="card">
     <div id="card_content">
@@ -138,6 +144,11 @@
     border-radius: 0.5rem;
     background-color: rgb(32, 32, 34);
     margin-bottom: 3rem;
+    transition: all 0.25s ease-in-out;
+
+    &:hover {
+      transform: scale(1.05);
+    }
   }
 
   .stat_card_content {

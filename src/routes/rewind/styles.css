@@ -10,6 +10,9 @@ main {
 #card {
   border-radius: 1em;
   border: 1px solid white;
+
+  max-height: 80vh;
+  overflow: scroll;
 }
 
 #card_content {

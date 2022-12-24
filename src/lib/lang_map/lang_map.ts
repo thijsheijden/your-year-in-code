@@ -1731,7 +1731,6 @@ export const langMap: Record<string, string[]> = {
     "redcode"
   ],
   "rs": [
-    "renderscript",
     "rust"
   ],
   "rsh": [
