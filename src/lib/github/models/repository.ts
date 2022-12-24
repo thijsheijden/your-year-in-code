@@ -23,6 +23,7 @@ type Repository = {
   activeDates?: Array<string>;
 
   // PR info
+  PRs: PR[];
   largestPRMergedAdditions: number;
   largestPRMergedDeletions: number;
   smallestPRMergedAdditions: number;

@@ -4,6 +4,7 @@ import getCommitDetails from "./get_commit_details";
 import getCommitSHAsByUserInRepository from "./get_commit_SHAs_by_user_in_repository";
 import type Commit from "./models/commits";
 import type PR from "./models/pr";
+import type PRReview from "./models/pr_review";
 import type Repository from "./models/repository";
 
 // getPRsForAllActiveRepos gets the PRs opened in the last year in all active repos
@@ -63,6 +64,26 @@ function getPRsForRepo(
               prObject.merge_commit = commit;
             });
           }
+          
+          // Fetch the PR reviews
+          let prReviews: PRReview[] = [];
+          client.rest.pulls.listReviews({
+            owner: repo.owner,
+            repo: repo.name,
+            pull_number: prObject.number,
+          }).then((prReviewsResult: any) => {
+            prReviewsResult.data.forEach((review: any) => {
+              prReviews.push({
+                by_authenticated_user: review.user.login == user,
+                state: review.state,
+                URL: review.html_url,
+                body: review.body,
+              })
+            });
+          })
+
+          // Add to the PR object
+          prObject.reviews = prReviews;
 
           // Determine if the PR was created by this user
           pr.user.login == user
@@ -72,6 +93,8 @@ function getPRsForRepo(
             // Add to list
             finalPRObjects.push(prObject);
         });
+
+        repo.PRs = finalPRObjects;
 
         resolve(repo);
       });
