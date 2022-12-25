@@ -12,11 +12,9 @@
   let mostCommits: number;
   let currentlySelectedDate: {
     date: string;
-    repos: string[];
     languages: string[];
   } = {
     date: "",
-    repos: [],
     languages: [],
   };
 
@@ -34,7 +32,6 @@
       let firstDaySunday = false;
       while (!firstDaySunday) {
         let firstDate = dates.pop()!;
-        console.log(firstDate);
         if (new Date(firstDate).getDay() == 0) {
           dates.push(firstDate);
           firstDaySunday = true;
@@ -67,9 +64,6 @@
     currentlySelectedDate.date = date;
     currentlySelectedDate.languages = Object.keys(
       fullStats.perDay[date].perLanguage
-    );
-    currentlySelectedDate.repos = Array.from(
-      fullStats.perDay[date].reposWorkedIn ?? []
     );
     dates = dates;
   };
@@ -143,6 +137,8 @@
           <div id="day_details">
             <h1>{currentlySelectedDate.date}</h1>
             <div id="stat_cards">
+              <!-- Global day stats -->
+              <h3 style="grid-column: 1/-1;">Overview</h3>
               <div class="stat_card">
                 <div class="stat_card_content">
                   <h3>Commits</h3>
