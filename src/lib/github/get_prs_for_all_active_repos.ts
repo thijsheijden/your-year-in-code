@@ -53,6 +53,7 @@ async function getPRsForRepo(
               number: pr.number,
               state: pr.state,
               created_at: pr.created_at,
+              closedAt: pr.closed_at ?? null,
               merge_commit_sha: pr.merge_commit_sha,
               total_changes: 0,
             };
@@ -81,6 +82,7 @@ async function getPRsForRepo(
                 state: review.state,
                 URL: review.html_url,
                 body: review.body,
+                submittedAt: review.submitted_at,
               });
             });
 
@@ -101,8 +103,31 @@ async function getPRsForRepo(
 
         // Calculate repo PR totals
         repo.PRs.map((pr) => {
+          // Init day stats fields
+          const prCreatedDate = pr.created_at.split("T")[0];
+          if (!repo.statsPerDate![prCreatedDate]) {
+            repo.statsPerDate![prCreatedDate] = {
+              PRsCreated: 0,
+              PRsMerged: 0,
+              PRsReviewed: 0,
+            };
+          }
+
+          let prMergedDate: string | null;
+          if (pr.closedAt) {
+            prMergedDate = pr.closedAt.split("T")[0];
+            if (!repo.statsPerDate![prMergedDate]) {
+              repo.statsPerDate![prMergedDate] = {
+                PRsCreated: 0,
+                PRsMerged: 0,
+                PRsReviewed: 0,
+              };
+            }
+          }
+
           if (pr.created_by_user) {
             repo.totalPRsOpened++;
+            repo.statsPerDate![prCreatedDate].PRsCreated!++;
 
             if (pr.total_changes > (repo.largestPROpened?.total_changes ?? 0)) {
               repo.largestPROpened = pr;
@@ -119,6 +144,7 @@ async function getPRsForRepo(
           if (pr.state == "closed") {
             repo.totalPRsMerged++;
             repo.totalMergedPRChanges += pr.total_changes;
+            repo.statsPerDate![prMergedDate!].PRsMerged!++;
 
             if (pr.total_changes > (repo.largestPRMerged?.total_changes ?? 0)) {
               repo.largestPRMerged = pr;
@@ -133,11 +159,21 @@ async function getPRsForRepo(
           }
 
           if (pr.reviews) {
-            pr.reviews.map(review => {
+            pr.reviews.map((review) => {
               if (review.by_authenticated_user) {
                 repo.totalReviewedPRChanges += pr.total_changes;
+
+                const prReviewedDate = review.submittedAt.split("T")[0];
+                if (!repo.statsPerDate![prReviewedDate]) {
+                  repo.statsPerDate![prReviewedDate] = {
+                    PRsCreated: 0,
+                    PRsMerged: 0,
+                    PRsReviewed: 0,
+                  };
+                }
+                repo.statsPerDate![prReviewedDate].PRsReviewed!++;
               }
-            })
+            });
           }
 
           pr.reviews?.map((review) => {

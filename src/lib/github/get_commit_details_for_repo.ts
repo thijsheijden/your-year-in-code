@@ -47,13 +47,16 @@ export default function getCommitDetailsForRepo(
             additions: 0,
             deletions: 0,
             perLanguage: {},
+            PRsCreated: 0,
+            PRsMerged: 0,
+            PRsReviewed: 0,
           };
         }
 
         // Add the stats for this commit to the date it occurred
-        statsPerDate[commitDate].additions += c.additions;
-        statsPerDate[commitDate].deletions += c.deletions;
-        statsPerDate[commitDate].commits += 1;
+        statsPerDate[commitDate].additions! += c.additions;
+        statsPerDate[commitDate].deletions! += c.deletions;
+        statsPerDate[commitDate].commits! += 1;
 
         // Check if this commit has the longest or shortest commit message
         if (
@@ -104,8 +107,8 @@ export default function getCommitDetailsForRepo(
           }
 
           // Init value if language is not present for this date yet
-          if (!statsPerDate[commitDate].perLanguage[lang]) {
-            statsPerDate[commitDate].perLanguage[lang] = {
+          if (!statsPerDate[commitDate].perLanguage![lang]) {
+            statsPerDate[commitDate].perLanguage![lang] = {
               additions: 0,
               deletions: 0,
               commits: 0,
@@ -120,9 +123,9 @@ export default function getCommitDetailsForRepo(
           totalAdditionsAndDeletionsPerLanguage[lang].commits! += 1;
 
           // Add these stats to the day the commit occurred
-          statsPerDate[commitDate].perLanguage[lang].additions +=
+          statsPerDate[commitDate].perLanguage![lang].additions +=
             c.statsPerLanguage[lang].additions;
-          statsPerDate[commitDate].perLanguage[lang].deletions +=
+          statsPerDate[commitDate].perLanguage![lang].deletions +=
             c.statsPerLanguage[lang].deletions;
         }
       });

@@ -167,14 +167,19 @@ export default function calculateTotals(repos: Array<Repository>): FullStats {
     for (let date in r.statsPerDate) {
       const repoDayStats = r.statsPerDate[date];
       const fullDayStats = fullStats.perDay[date];
-      fullDayStats.commits += repoDayStats.commits;
-      fullDayStats.additions += repoDayStats.additions;
-      fullDayStats.deletions += repoDayStats.deletions;
+      fullDayStats.commits! += repoDayStats.commits ?? 0;
+      fullDayStats.additions! += repoDayStats.additions ?? 0;
+      fullDayStats.deletions! += repoDayStats.deletions ?? 0;
+      fullDayStats.PRsCreated! += repoDayStats.PRsCreated ?? 0;
+      fullDayStats.PRsMerged! += repoDayStats.PRsMerged ?? 0;
+      fullDayStats.PRsReviewed! += repoDayStats.PRsReviewed ?? 0;
       fullDayStats.reposWorkedIn!.add(r.name);
       reposWorkedIn.add(r.name);
 
       for (let lang in repoDayStats.perLanguage) {
-        fullDayStats.perLanguage[lang] = repoDayStats.perLanguage[lang];
+        if (fullDayStats.perLanguage) {
+          fullDayStats.perLanguage[lang] = repoDayStats.perLanguage[lang];
+        }
       }
     }
   });
@@ -182,17 +187,17 @@ export default function calculateTotals(repos: Array<Repository>): FullStats {
   // Calculate true global maximum additions, deletions, commits etc based on the day-by-day info
   for (let date in fullStats.perDay) {
     const d = fullStats.perDay[date];
-    if (d.additions > fullStats.mostAdditionsInDay) {
+    if (d.additions && d.additions > fullStats.mostAdditionsInDay) {
       fullStats.mostAdditionsInDay = d.additions;
       fullStats.dateWithMostAdditions = date;
     }
 
-    if (d.deletions > fullStats.mostDeletionsInDay) {
+    if (d.deletions && d.deletions > fullStats.mostDeletionsInDay) {
       fullStats.mostDeletionsInDay = d.deletions;
       fullStats.dateWithMostDeletions = date;
     }
 
-    if (d.commits > fullStats.mostCommitsInDay) {
+    if (d.commits && d.commits > fullStats.mostCommitsInDay) {
       fullStats.mostCommitsInDay = d.commits;
       fullStats.dateWithMostCommits = date;
     }

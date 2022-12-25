@@ -69,7 +69,6 @@ export default function getCommitDetails(
           statsPerLanguage[language].deletions += f.deletions;
         });
 
-        console.log(data)
         resolve({
           sha: sha,
           additions: data.stats.additions,

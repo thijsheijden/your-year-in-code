@@ -6,6 +6,7 @@ type PR = {
   number: number, // The number of the PR, useful when fetching comments
   state: string, // State of the PR, one of "open", "closed"
   created_at: string, // Date the PR was created
+  closedAt?: string, // Date the PR was merged
   merge_commit_sha: string, // The SHA hash of the merge commit
   
   // Computed properties
