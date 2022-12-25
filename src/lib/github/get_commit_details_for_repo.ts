@@ -56,17 +56,40 @@ export default function getCommitDetailsForRepo(
         statsPerDate[commitDate].commits += 1;
 
         // Check if this commit has the longest or shortest commit message
-        if (c.message.length > (repo.commitWithLongestMessage?.message ?? "").length) {
+        if (
+          c.message.length >
+          (repo.commitWithLongestMessage?.message ?? "").length
+        ) {
           // Make sure it is not a squashed commit message
           if (!c.message.includes("Squashed commit")) {
             repo.commitWithLongestMessage = c;
           }
         }
         if (
-          c.message.length < (repo.commitWithShortestMessage?.message ?? "").length ||
+          c.message.length <
+            (repo.commitWithShortestMessage?.message ?? "").length ||
           repo.commitWithShortestMessage == undefined
         ) {
           repo.commitWithShortestMessage = c;
+        }
+
+        // Check if this commit has the most/least changes
+        if (
+          c.totalChanges >
+          (repo.largestCommit?.totalChanges ?? Number.MIN_SAFE_INTEGER)
+        ) {
+          repo.largestCommit = c;
+        }
+        if (
+          c.totalChanges <
+          (repo.smallestCommit?.totalChanges ?? Number.MAX_SAFE_INTEGER)
+        ) {
+          repo.smallestCommit = c;
+        }
+
+        // Check if this commit changed the most files
+        if (c.filesChanged > (repo.commitWithMostFilesChanged?.filesChanged ?? Number.MIN_SAFE_INTEGER)) {
+          repo.commitWithMostFilesChanged = c;
         }
 
         // Go over all languages in the commit and update the total stats for that language

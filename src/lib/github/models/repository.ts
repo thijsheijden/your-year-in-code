@@ -13,6 +13,9 @@ type Repository = {
   commitSHAs?: Array<string>;
   commitWithLongestMessage?: Commit;
   commitWithShortestMessage?: Commit;
+  largestCommit?: Commit; // The commit with the most additions + deletions
+  smallestCommit?: Commit; // The commit with the least additions + deletions
+  commitWithMostFilesChanged?: Commit // The commit that changed the most files
 
   // Global repo stats
   totalAdditions?: number;

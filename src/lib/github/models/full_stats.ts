@@ -22,8 +22,11 @@ type FullStats = {
   languageStatsPerRepo: Record<string, Record<string, Stats>>; // Repo name -> language -> stats
 
   // Highest values
-  commitWithLongestMessage?: Commit;
-  commitWithShortestMessage?: Commit;
+  commitWithLongestMessage?: Commit; // The commit with the largest commit message
+  commitWithShortestMessage?: Commit; // The commit with the shortest commit message
+  largestCommit?: Commit; // The commit with the most additions + deletions
+  smallestCommit?: Commit; // The commit with the least additions + deletions
+  commitWithMostFilesChanged?: Commit // The commit that changed the most files
   mostAdditionsInDay: number;
   mostDeletionsInDay: number;
   mostCommitsInDay: number;

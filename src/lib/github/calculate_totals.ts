@@ -106,6 +106,45 @@ export default function calculateTotals(repos: Array<Repository>): FullStats {
       }
     }
 
+    // Check if this repository contains a highlight PR
+    // Opened PRs
+    if (r.largestPROpened && r.largestPROpened.total_changes > (fullStats.largestPROpened?.total_changes ?? Number.MIN_SAFE_INTEGER)) {
+      fullStats.largestPROpened = r.largestPROpened
+    }
+    if (r.smallestPROpened && r.smallestPROpened.total_changes > (fullStats.smallestPROpened?.total_changes ?? Number.MAX_SAFE_INTEGER)) {
+      fullStats.smallestPROpened = r.smallestPROpened
+    }
+
+    // Merged PRs
+    if (r.largestPRMerged && r.largestPRMerged.total_changes > (fullStats.largestPRMerged?.total_changes ?? Number.MIN_SAFE_INTEGER)) {
+      fullStats.largestPRMerged = r.largestPRMerged
+    }
+    if (r.smallestPRMerged && r.smallestPRMerged.total_changes > (fullStats.smallestPRMerged?.total_changes ?? Number.MAX_SAFE_INTEGER)) {
+      fullStats.smallestPRMerged = r.smallestPRMerged
+    }
+
+    // Reviewed PRs
+    if (r.largestPRReviewed && r.largestPRReviewed.total_changes > (fullStats.largestPRReviewed?.total_changes ?? Number.MIN_SAFE_INTEGER)) {
+      fullStats.largestPRReviewed = r.largestPRReviewed
+    }
+    if (r.smallestPRReviewed && r.smallestPRReviewed.total_changes > (fullStats.smallestPRReviewed?.total_changes ?? Number.MAX_SAFE_INTEGER)) {
+      fullStats.smallestPRReviewed = r.smallestPRReviewed
+    }
+
+    // Check if this repository contains the largest, smallest and most files changed commits
+    // Largest commit
+    if (r.largestCommit && r.largestCommit.totalChanges > (fullStats.largestCommit?.totalChanges ?? Number.MIN_SAFE_INTEGER)) {
+      fullStats.largestCommit = r.largestCommit;
+    }
+    // Smallest commit
+    if (r.smallestCommit && r.smallestCommit.totalChanges < (fullStats.smallestCommit?.totalChanges ?? Number.MAX_SAFE_INTEGER)) {
+      fullStats.smallestCommit = r.smallestCommit;
+    }
+    // Most files changed commit
+    if (r.commitWithMostFilesChanged && r.commitWithMostFilesChanged.filesChanged > (fullStats.commitWithMostFilesChanged?.filesChanged ?? Number.MIN_SAFE_INTEGER)) {
+      fullStats.commitWithMostFilesChanged = r.commitWithMostFilesChanged;
+    }
+
     // Update all language stats
     for (let lang in r.totalAdditionsAndDeletionsPerLanguage) {
       if (fullStats.totalAdditionsAndDeletionsPerLanguage[lang]) {

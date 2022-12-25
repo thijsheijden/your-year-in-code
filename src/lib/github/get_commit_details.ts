@@ -69,6 +69,7 @@ export default function getCommitDetails(
           statsPerLanguage[language].deletions += f.deletions;
         });
 
+        console.log(data)
         resolve({
           sha: sha,
           additions: data.stats.additions,
@@ -76,6 +77,9 @@ export default function getCommitDetails(
           date: data.commit.author.date,
           message: data.commit.message,
           statsPerLanguage: statsPerLanguage,
+          htmlURL: data.html_url,
+          totalChanges: data.stats.additions + data.stats.deletions,
+          filesChanged: updatedFiles.length,
         });
       });
   });
