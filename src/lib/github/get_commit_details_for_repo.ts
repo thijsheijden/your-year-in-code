@@ -50,6 +50,7 @@ export default function getCommitDetailsForRepo(
             PRsCreated: 0,
             PRsMerged: 0,
             PRsReviewed: 0,
+            commentsWritten: 0,
           };
         }
 

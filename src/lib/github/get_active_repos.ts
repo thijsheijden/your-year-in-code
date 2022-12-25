@@ -28,6 +28,7 @@ const getActiveRepos = (client: Octokit): Promise<Array<Repository>> => {
               totalMergedPRChanges: 0,
               totalReviewedPRChanges: 0,
               longestCommitMessage: "",
+              PRsApproved: 0,
             };
           })
         );

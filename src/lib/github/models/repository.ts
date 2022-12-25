@@ -1,6 +1,7 @@
 import type Commit from "./commits";
 import type DayStats from "./day_stats";
 import type PR from "./pr";
+import type PRReview from "./pr_review";
 import type Stats from "./stats";
 
 type Repository = {
@@ -29,9 +30,9 @@ type Repository = {
 
   // PR info
   PRs: PR[];
-  totalPRsOpened: number;
-  totalPRsMerged: number;
-  totalPRsReviewed: number;
+  totalPRsOpened: number; // Number of PRs opened by the user
+  totalPRsMerged: number; // Number of PRs opened by the user that were merged
+  totalPRsReviewed: number; // Number of PRs the user reviewed
   totalMergedPRChanges: number;
   totalReviewedPRChanges: number;
   largestPROpened?: PR;
@@ -40,6 +41,11 @@ type Repository = {
   smallestPRMerged?: PR;
   largestPRReviewed?: PR;
   smallestPRReviewed?: PR;
+  PRWithLongestReview?: PR;
+  longestReviewLeft?: PRReview;
+  PRWithShortestReview?: PR;
+  shortestReviewLeft?: PRReview;
+  PRsApproved: number; // The number of your PRs that have been approved
 };
 
 export default Repository;

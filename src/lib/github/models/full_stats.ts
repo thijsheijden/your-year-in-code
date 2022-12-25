@@ -1,6 +1,7 @@
 import type Commit from "./commits";
 import type DayStats from "./day_stats";
 import type PR from "./pr";
+import type PRReview from "./pr_review";
 import type Stats from "./stats";
 
 type FullStats = {
@@ -36,17 +37,17 @@ type FullStats = {
   smallestPRMerged?: PR;
   largestPRReviewed?: PR;
   smallestPRReviewed?: PR;
+  PRWithLongestReview?: PR;
+  longestReviewLeft?: PRReview;
+  PRWithShortestReview?: PR;
+  shortestReviewLeft?: PRReview;
+  PRApprovalRatio?: number; // The percentage of PRs the user opened that were approved
+  PRMergeRatio?: number; // The percentage of PRs the user opened that were merged
 
   // Date strings;
   dateWithMostAdditions: string;
   dateWithMostDeletions: string;
   dateWithMostCommits: string;
-  dateWithMostPRsMerged?: string;
-  dateWithMostPRsReviewed?: string;
-  dateWithLargestPRMerged?: string;
-  dateWithSmallestPRMerged?: string;
-  dateWithLargestPRReviewed?: string;
-  dateWithSmallestPRReviewed?: string;
 
   // All dates with their stats
   perDay: Record<string, DayStats>; // Date string YYYY-MM-DD is key

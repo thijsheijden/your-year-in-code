@@ -10,9 +10,9 @@ export default function getReviewsOnAllRepoPRs(
   repo: Repository,
 ): Promise<Repository> {
   return new Promise<Repository>((resolve, reject) => {
-    if (repo.PRsInRepo!.length > 0) {
+    if (repo.PRs!.length > 0) {
       Promise.all(
-        repo.PRsInRepo!.map((pr: any) => getReviewsForPR(client, user, repo, pr))
+        repo.PRs!.map((pr: any) => getReviewsForPR(client, user, repo, pr))
       ).then((_: void[]) => {
         resolve(repo);
       })
@@ -41,7 +41,9 @@ function getReviewsForPR(
           prReviewObjects.push({
             by_authenticated_user: elem.user.login == user,
             state: elem.state,
-            URL: elem.html_url
+            URL: elem.html_url,
+            body: elem.body,
+            submittedAt: elem.submitted_at,
           })
         });
 

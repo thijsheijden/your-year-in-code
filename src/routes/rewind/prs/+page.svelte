@@ -1,21 +1,16 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { statsStore } from "$lib/data_store/stats_store";
-  import calculateTotals from "$lib/github/calculate_totals";
   import type FullStats from "$lib/github/models/full_stats";
-  import type Stats from "$lib/github/models/stats";
   import { onMount } from "svelte";
   import "../styles.css";
 
   let fullStats: FullStats;
   let dates: string[];
-  let mostCommits: number;
   let currentlySelectedDate: {
     date: string;
-    languages: string[];
   } = {
     date: "",
-    languages: [],
   };
 
   // Load stats from store
@@ -26,7 +21,6 @@
     } else {
       fullStats = $statsStore!;
       dates = Object.keys(fullStats.perDay);
-      mostCommits = fullStats.mostCommitsInDay;
 
       // Make sure the first day is a sunday
       let firstDaySunday = false;
@@ -42,35 +36,28 @@
     }
   });
 
-  let squareColors = ["#C6E48B", "#7BC96F", "#196127"];
   const getColorForSquare = (date: string): string => {
     if (date == currentlySelectedDate.date) {
       return "var(--commit-color)";
     }
 
-    let commits = fullStats.perDay[date].commits;
-    if (commits == 0) {
-      return "#EBEDF0";
+    let dayStats = fullStats.perDay[date];
+    let prInteractions =
+      (dayStats.PRsCreated ?? 0) +
+      (dayStats.PRsMerged ?? 0) +
+      (dayStats.PRsReviewed ?? 0);
+    if (prInteractions == 0) {
+      return "var(--accent-color)";
     }
 
-    return squareColors[Math.min(Math.floor((commits * 3) / mostCommits), 2)];
+    return "var(--merged-color)";
   };
 
-  const openDayDetailView = (e: MouseEvent, date: string) => {
-    if (date == currentlySelectedDate.date) {
-      currentlySelectedDate.date = "";
-    }
-
-    currentlySelectedDate.date = date;
-    currentlySelectedDate.languages = Object.keys(
-      fullStats.perDay[date].perLanguage
-    );
-    dates = dates;
-  };
+  const openDayDetailView = (e: MouseEvent, date: string) => {};
 
   const moveToNextPage = (e: KeyboardEvent) => {
     if (e.key == "ArrowRight") {
-      goto("/rewind/commits");
+      goto("/rewind/global");
     } else if (e.key == "ArrowLeft") {
       goto("/rewind/commits");
     }
@@ -133,8 +120,7 @@
           </ul>
         </div>
 
-        <!-- Day detailed stats -->
-        {#if currentlySelectedDate.date != ""}
+        {#if currentlySelectedDate.date}
           <div id="day_details">
             <h1>{currentlySelectedDate.date}</h1>
             <div id="stat_cards">
@@ -144,7 +130,9 @@
                 <div class="stat_card_content">
                   <h3>Commits</h3>
                   <h4 style="color: var(--commit-color);">
-                    {fullStats.perDay[currentlySelectedDate.date].commits}
+                    {fullStats.perDay[
+                      currentlySelectedDate.date
+                    ].commits.toLocaleString()}
                   </h4>
                 </div>
               </div>
@@ -152,7 +140,9 @@
                 <div class="stat_card_content">
                   <h3>Additions</h3>
                   <h4 style="color: var(--additions-color);">
-                    +{fullStats.perDay[currentlySelectedDate.date].additions}
+                    +{fullStats.perDay[
+                      currentlySelectedDate.date
+                    ].additions.toLocaleString()}
                   </h4>
                 </div>
               </div>
@@ -160,7 +150,9 @@
                 <div class="stat_card_content">
                   <h3>Deletions</h3>
                   <h4 style="color: var(--deletions-color);">
-                    -{fullStats.perDay[currentlySelectedDate.date].deletions}
+                    -{fullStats.perDay[
+                      currentlySelectedDate.date
+                    ].deletions.toLocaleString()}
                   </h4>
                 </div>
               </div>
@@ -173,18 +165,209 @@
                     <h3>{language}</h3>
                     <h4>
                       (<span style="color: var(--additions-color);"
-                        >+{fullStats.perDay[currentlySelectedDate.date]
-                          .perLanguage[language].additions}</span
+                        >+{fullStats.perDay[
+                          currentlySelectedDate.date
+                        ].perLanguage[
+                          language
+                        ].additions.toLocaleString()}</span
                       >,
                       <span style="color: var(--deletions-color);"
-                        >-{fullStats.perDay[currentlySelectedDate.date]
-                          .perLanguage[language].deletions}</span
+                        >-{fullStats.perDay[
+                          currentlySelectedDate.date
+                        ].perLanguage[
+                          language
+                        ].deletions.toLocaleString()}</span
                       >)
                     </h4>
                   </div>
                 </div>
               {/each}
             </div>
+          </div>
+        {:else}
+          <!-- Global PR stats -->
+          <div class="grid col3">
+            {#if fullStats.largestPROpened}
+              <!-- Largest PR opened -->
+              <div class="stat_card">
+                <h3>Largest PR opened</h3>
+                <div class="stat_card_content">
+                  <h4 style="color: var(--commit-color);">
+                    {fullStats.largestPROpened?.total_changes.toLocaleString()} changes
+                  </h4>
+                  <h5>
+                    <a href={fullStats.largestPROpened?.URL}
+                      >view on <svg height="16px" width="16px">
+                        <image
+                          xlink:href="/img/github-logo.svg"
+                          height="16px"
+                          width="16px"
+                        />
+                      </svg></a
+                    >
+                  </h5>
+                </div>
+              </div>
+
+              <!-- Smallest PR opened -->
+              <div class="stat_card">
+                <h3>Smallest PR opened</h3>
+                <div class="stat_card_content">
+                  <h4 style="color: var(--commit-color);">
+                    {fullStats.smallestPROpened?.total_changes.toLocaleString()}
+                    changes
+                  </h4>
+                  <h5>
+                    <a href={fullStats.smallestPROpened?.URL}
+                      >view on <svg height="16px" width="16px">
+                        <image
+                          xlink:href="/img/github-logo.svg"
+                          height="16px"
+                          width="16px"
+                        />
+                      </svg></a
+                    >
+                  </h5>
+                </div>
+              </div>
+            {/if}
+
+            {#if fullStats.largestPRMerged}
+              <!-- Largest PR merged -->
+              <div class="stat_card">
+                <h3>Largest PR merged</h3>
+                <div class="stat_card_content">
+                  <h4 style="color: var(--commit-color);">
+                    {fullStats.largestPRMerged?.total_changes.toLocaleString()} changes
+                  </h4>
+                  <h5>
+                    <a href={fullStats.largestPRMerged?.URL}
+                      >view on <svg height="16px" width="16px">
+                        <image
+                          xlink:href="/img/github-logo.svg"
+                          height="16px"
+                          width="16px"
+                        />
+                      </svg></a
+                    >
+                  </h5>
+                </div>
+              </div>
+
+              <!-- Smallest PR merged -->
+              <div class="stat_card">
+                <h3>Smallest PR merged</h3>
+                <div class="stat_card_content">
+                  <h4 style="color: var(--commit-color);">
+                    {fullStats.smallestPRMerged?.total_changes.toLocaleString()}
+                    changes
+                  </h4>
+                  <h5>
+                    <a href={fullStats.smallestPRMerged?.URL}
+                      >view on <svg height="16px" width="16px">
+                        <image
+                          xlink:href="/img/github-logo.svg"
+                          height="16px"
+                          width="16px"
+                        />
+                      </svg></a
+                    >
+                  </h5>
+                </div>
+              </div>
+            {/if}
+
+            {#if fullStats.largestPRReviewed}
+              <!-- Largest PR reviewed -->
+              <div class="stat_card">
+                <h3>Largest PR reviewed</h3>
+                <div class="stat_card_content">
+                  <h4 style="color: var(--commit-color);">
+                    {fullStats.largestPRReviewed?.total_changes.toLocaleString()}
+                    changes
+                  </h4>
+                  <h5>
+                    <a href={fullStats.largestPRReviewed?.URL}
+                      >view on <svg height="16px" width="16px">
+                        <image
+                          xlink:href="/img/github-logo.svg"
+                          height="16px"
+                          width="16px"
+                        />
+                      </svg></a
+                    >
+                  </h5>
+                </div>
+              </div>
+
+              <!-- Smallest PR reviewed -->
+              <div class="stat_card">
+                <h3>Smallest PR reviewed</h3>
+                <div class="stat_card_content">
+                  <h4 style="color: var(--commit-color);">
+                    {fullStats.smallestPRReviewed?.total_changes.toLocaleString()}
+                    changes
+                  </h4>
+                  <h5>
+                    <a href={fullStats.smallestPRReviewed?.URL}
+                      >view on <svg height="16px" width="16px">
+                        <image
+                          xlink:href="/img/github-logo.svg"
+                          height="16px"
+                          width="16px"
+                        />
+                      </svg></a
+                    >
+                  </h5>
+                </div>
+              </div>
+            {/if}
+
+            {#if fullStats.longestReviewLeft}
+              <!-- Longest review left -->
+              <div class="stat_card full-width">
+                <h3>Longest review left</h3>
+                <div class="stat_card_content">
+                  <p>
+                    {fullStats.longestReviewLeft.body}
+                  </p>
+                  <h5>
+                    <a href={fullStats.longestReviewLeft.URL}
+                      >view on <svg height="16px" width="16px">
+                        <image
+                          xlink:href="/img/github-logo.svg"
+                          height="16px"
+                          width="16px"
+                        />
+                      </svg></a
+                    >
+                  </h5>
+                </div>
+              </div>
+            {/if}
+
+            {#if fullStats.shortestReviewLeft}
+              <!-- Longest review left -->
+              <div class="stat_card full-width">
+                <h3>Shortest review left</h3>
+                <div class="stat_card_content">
+                  <p>
+                    {fullStats.shortestReviewLeft.body}
+                  </p>
+                  <h5>
+                    <a href={fullStats.shortestReviewLeft.URL}
+                      >view on <svg height="16px" width="16px">
+                        <image
+                          xlink:href="/img/github-logo.svg"
+                          height="16px"
+                          width="16px"
+                        />
+                      </svg></a
+                    >
+                  </h5>
+                </div>
+              </div>
+            {/if}
           </div>
         {/if}
       {/if}
@@ -286,5 +469,32 @@
     border-radius: 0.5rem;
     background-color: rgb(32, 32, 34);
     padding: 1rem;
+
+    > * {
+      margin: 0.5rem 0;
+    }
+  }
+
+  .grid {
+    display: grid;
+    gap: 1rem;
+
+    .full-width {
+      grid-column: 1/-1;
+    }
+  }
+
+  .col3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  h5 {
+    margin-top: 1rem;
+
+    a {
+      display: inline;
+      text-decoration: none;
+      color: var(--commit-color);
+    }
   }
 </style>

@@ -36,12 +36,6 @@ export default function calculateTotals(repos: Array<Repository>): FullStats {
     totalPRChanges: 0,
     totalPRsReviewed: 0,
     totalPRChangesReviewed: 0,
-    dateWithMostPRsMerged: "",
-    dateWithMostPRsReviewed: "",
-    dateWithLargestPRMerged: "",
-    dateWithSmallestPRMerged: "",
-    dateWithLargestPRReviewed: "",
-    dateWithSmallestPRReviewed: "",
   };
 
   // Populate the perDay data with every date in the past year
@@ -68,6 +62,8 @@ export default function calculateTotals(repos: Array<Repository>): FullStats {
   }
 
   const reposWorkedIn: Set<string> = new Set<string>();
+
+  let [PRsOpened, PRsMerged, PRsApproved] = [0, 0, 0];
 
   // Go over all repos and calculate totals
   repos.forEach((r) => {
@@ -108,40 +104,99 @@ export default function calculateTotals(repos: Array<Repository>): FullStats {
 
     // Check if this repository contains a highlight PR
     // Opened PRs
-    if (r.largestPROpened && r.largestPROpened.total_changes > (fullStats.largestPROpened?.total_changes ?? Number.MIN_SAFE_INTEGER)) {
-      fullStats.largestPROpened = r.largestPROpened
+    if (
+      r.largestPROpened &&
+      r.largestPROpened.total_changes >
+        (fullStats.largestPROpened?.total_changes ?? Number.MIN_SAFE_INTEGER)
+    ) {
+      fullStats.largestPROpened = r.largestPROpened;
     }
-    if (r.smallestPROpened && r.smallestPROpened.total_changes > (fullStats.smallestPROpened?.total_changes ?? Number.MAX_SAFE_INTEGER)) {
-      fullStats.smallestPROpened = r.smallestPROpened
+    if (
+      r.smallestPROpened &&
+      r.smallestPROpened.total_changes <
+        (fullStats.smallestPROpened?.total_changes ?? Number.MAX_SAFE_INTEGER)
+    ) {
+      fullStats.smallestPROpened = r.smallestPROpened;
     }
 
     // Merged PRs
-    if (r.largestPRMerged && r.largestPRMerged.total_changes > (fullStats.largestPRMerged?.total_changes ?? Number.MIN_SAFE_INTEGER)) {
-      fullStats.largestPRMerged = r.largestPRMerged
+    if (
+      r.largestPRMerged &&
+      r.largestPRMerged.total_changes >
+        (fullStats.largestPRMerged?.total_changes ?? Number.MIN_SAFE_INTEGER)
+    ) {
+      fullStats.largestPRMerged = r.largestPRMerged;
     }
-    if (r.smallestPRMerged && r.smallestPRMerged.total_changes > (fullStats.smallestPRMerged?.total_changes ?? Number.MAX_SAFE_INTEGER)) {
-      fullStats.smallestPRMerged = r.smallestPRMerged
+    if (
+      r.smallestPRMerged &&
+      r.smallestPRMerged.total_changes <
+        (fullStats.smallestPRMerged?.total_changes ?? Number.MAX_SAFE_INTEGER)
+    ) {
+      fullStats.smallestPRMerged = r.smallestPRMerged;
     }
 
     // Reviewed PRs
-    if (r.largestPRReviewed && r.largestPRReviewed.total_changes > (fullStats.largestPRReviewed?.total_changes ?? Number.MIN_SAFE_INTEGER)) {
-      fullStats.largestPRReviewed = r.largestPRReviewed
+    if (
+      r.largestPRReviewed &&
+      r.largestPRReviewed.total_changes >
+        (fullStats.largestPRReviewed?.total_changes ?? Number.MIN_SAFE_INTEGER)
+    ) {
+      fullStats.largestPRReviewed = r.largestPRReviewed;
     }
-    if (r.smallestPRReviewed && r.smallestPRReviewed.total_changes > (fullStats.smallestPRReviewed?.total_changes ?? Number.MAX_SAFE_INTEGER)) {
-      fullStats.smallestPRReviewed = r.smallestPRReviewed
+    if (
+      r.smallestPRReviewed &&
+      r.smallestPRReviewed.total_changes <
+        (fullStats.smallestPRReviewed?.total_changes ?? Number.MAX_SAFE_INTEGER)
+    ) {
+      fullStats.smallestPRReviewed = r.smallestPRReviewed;
     }
+
+    // PR reviews
+    if (
+      r.longestReviewLeft &&
+      r.longestReviewLeft.body.length >
+        (fullStats.longestReviewLeft?.body.length ?? Number.MIN_SAFE_INTEGER)
+    ) {
+      fullStats.longestReviewLeft = r.longestReviewLeft;
+      fullStats.PRWithLongestReview = r.PRWithLongestReview;
+    }
+    if (
+      r.shortestReviewLeft &&
+      r.shortestReviewLeft.body.length <
+        (fullStats.shortestReviewLeft?.body.length ?? Number.MAX_SAFE_INTEGER)
+    ) {
+      fullStats.shortestReviewLeft = r.shortestReviewLeft;
+      fullStats.PRWithShortestReview = r.PRWithShortestReview;
+    }
+
+    PRsOpened += r.totalPRsOpened;
+    PRsMerged += r.totalPRsMerged;
+    PRsApproved += r.PRsApproved;
 
     // Check if this repository contains the largest, smallest and most files changed commits
     // Largest commit
-    if (r.largestCommit && r.largestCommit.totalChanges > (fullStats.largestCommit?.totalChanges ?? Number.MIN_SAFE_INTEGER)) {
+    if (
+      r.largestCommit &&
+      r.largestCommit.totalChanges >
+        (fullStats.largestCommit?.totalChanges ?? Number.MIN_SAFE_INTEGER)
+    ) {
       fullStats.largestCommit = r.largestCommit;
     }
     // Smallest commit
-    if (r.smallestCommit && r.smallestCommit.totalChanges < (fullStats.smallestCommit?.totalChanges ?? Number.MAX_SAFE_INTEGER)) {
+    if (
+      r.smallestCommit &&
+      r.smallestCommit.totalChanges <
+        (fullStats.smallestCommit?.totalChanges ?? Number.MAX_SAFE_INTEGER)
+    ) {
       fullStats.smallestCommit = r.smallestCommit;
     }
     // Most files changed commit
-    if (r.commitWithMostFilesChanged && r.commitWithMostFilesChanged.filesChanged > (fullStats.commitWithMostFilesChanged?.filesChanged ?? Number.MIN_SAFE_INTEGER)) {
+    if (
+      r.commitWithMostFilesChanged &&
+      r.commitWithMostFilesChanged.filesChanged >
+        (fullStats.commitWithMostFilesChanged?.filesChanged ??
+          Number.MIN_SAFE_INTEGER)
+    ) {
       fullStats.commitWithMostFilesChanged = r.commitWithMostFilesChanged;
     }
 
@@ -202,6 +257,11 @@ export default function calculateTotals(repos: Array<Repository>): FullStats {
       fullStats.dateWithMostCommits = date;
     }
   }
+
+  // PR ratios
+  fullStats.PRApprovalRatio =
+    Math.round((PRsApproved / PRsOpened) * 10000) / 100;
+  fullStats.PRMergeRatio = Math.round((PRsMerged / PRsOpened) * 10000) / 100;
 
   // Calculate number of languages used
   fullStats.numberOfLanguagesUsed = Object.keys(

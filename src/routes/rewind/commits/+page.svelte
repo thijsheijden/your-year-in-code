@@ -54,7 +54,7 @@
       return "var(--accent-color)";
     }
 
-    return squareColors[Math.min(Math.floor((commits * 3) / mostCommits), 2)];
+    return squareColors[Math.min(Math.floor((commits! * 3) / mostCommits), 2)];
   };
 
   const openDayDetailView = (e: MouseEvent, date: string) => {
@@ -63,7 +63,7 @@
     } else {
       currentlySelectedDate.date = date;
       currentlySelectedDate.languages = Object.keys(
-        fullStats.perDay[date].perLanguage
+        fullStats.perDay[date].perLanguage ?? {}
       );
     }
 
