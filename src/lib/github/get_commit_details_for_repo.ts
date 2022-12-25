@@ -57,7 +57,10 @@ export default function getCommitDetailsForRepo(
 
         // Check if this commit has the longest or shortest commit message
         if (c.message.length > (repo.commitWithLongestMessage?.message ?? "").length) {
-          repo.commitWithLongestMessage = c;
+          // Make sure it is not a squashed commit message
+          if (!c.message.includes("Squashed commit")) {
+            repo.commitWithLongestMessage = c;
+          }
         }
         if (
           c.message.length < (repo.commitWithShortestMessage?.message ?? "").length ||
