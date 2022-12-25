@@ -48,7 +48,6 @@ export default function calculateTotals(repos: Array<Repository>): FullStats {
   let yearAgo = new Date();
   yearAgo.setFullYear(yearAgo.getFullYear() - 1);
 
-  // ! This needs to be removed, as this is just because of the mock data
   for (
     let i = new Date();
     i >= yearAgo;

@@ -20,6 +20,7 @@
       goto("/");
     } else {
       fullStats = $statsStore!;
+      console.log(fullStats);
       loadAllLanguages();
       repositories = Object.keys(fullStats.languageStatsPerRepo);
     }
@@ -76,7 +77,7 @@
 
   const moveToNextPage = (e: KeyboardEvent) => {
     if (e.key == "ArrowRight") {
-      goto("/rewind/languages");
+      goto("/rewind/commits");
     } else if (e.key == "ArrowLeft") {
       goto("/rewind/global");
     }
@@ -97,7 +98,7 @@
           <h2 class="card_subtitle">How many lines did you write?</h2>
         </div>
         <div id="next_page">
-          <h2 class="card_subtitle">Next page: Languages</h2>
+          <h2 class="card_subtitle">Next page: Commits</h2>
           <div class="kbd">&#8594;</div>
         </div>
       </div>
