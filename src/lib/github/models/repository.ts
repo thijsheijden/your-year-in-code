@@ -11,6 +11,8 @@ type Repository = {
   owner: string;
   commits?: Array<Commit>;
   commitSHAs?: Array<string>;
+  commitWithLongestMessage?: Commit;
+  commitWithShortestMessage?: Commit;
 
   // Global repo stats
   totalAdditions?: number;

@@ -87,6 +87,25 @@ export default function calculateTotals(repos: Array<Repository>): FullStats {
     fullStats.languageStatsPerRepo[r.name] =
       r.totalAdditionsAndDeletionsPerLanguage!;
 
+    // Check if this repository has the longest or shortest commit messages
+    if (r.commitWithLongestMessage) {
+      if (
+        r.commitWithLongestMessage.message.length >
+        (fullStats.commitWithLongestMessage?.message.length ?? 0)
+      ) {
+        fullStats.commitWithLongestMessage = r.commitWithLongestMessage;
+      }
+    }
+    if (r.commitWithShortestMessage) {
+      if (
+        r.commitWithShortestMessage.message.length <
+          (fullStats.commitWithShortestMessage?.message.length ?? 0) ||
+        fullStats.commitWithShortestMessage == undefined
+      ) {
+        fullStats.commitWithShortestMessage = r.commitWithShortestMessage;
+      }
+    }
+
     // Update all language stats
     for (let lang in r.totalAdditionsAndDeletionsPerLanguage) {
       if (fullStats.totalAdditionsAndDeletionsPerLanguage[lang]) {

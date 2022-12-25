@@ -10,14 +10,12 @@ import type Stats from "./models/stats";
 // it adds the commits to the commits property of the repository
 export default function getCommitDetailsForRepo(
   client: Octokit,
-  repo: Repository,
+  repo: Repository
 ): Promise<Repository> {
   return new Promise<Repository>((resolve, reject) => {
     // Go over all commit SHAs and fetch the details
     Promise.all(
-      repo.commitSHAs!.map((sha: string) =>
-        getCommitDetails(client, repo, sha)
-      )
+      repo.commitSHAs!.map((sha: string) => getCommitDetails(client, repo, sha))
     ).then((commits: Array<Commit>) => {
       // Add the commits to the repo object
       repo.commits = commits;
@@ -56,6 +54,17 @@ export default function getCommitDetailsForRepo(
         statsPerDate[commitDate].additions += c.additions;
         statsPerDate[commitDate].deletions += c.deletions;
         statsPerDate[commitDate].commits += 1;
+
+        // Check if this commit has the longest or shortest commit message
+        if (c.message.length > (repo.commitWithLongestMessage?.message ?? "").length) {
+          repo.commitWithLongestMessage = c;
+        }
+        if (
+          c.message.length < (repo.commitWithShortestMessage?.message ?? "").length ||
+          repo.commitWithShortestMessage == undefined
+        ) {
+          repo.commitWithShortestMessage = c;
+        }
 
         // Go over all languages in the commit and update the total stats for that language
         for (let lang in c.statsPerLanguage) {

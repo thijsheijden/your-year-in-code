@@ -168,6 +168,7 @@
       console.log("FullStats not in store");
       await loadAllData();
       fullStats = $statsStore!;
+      console.log(fullStats);
     } else {
       console.log("FullStats being loaded from store");
 

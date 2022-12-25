@@ -70,9 +70,9 @@
 
   const moveToNextPage = (e: KeyboardEvent) => {
     if (e.key == "ArrowRight") {
-      goto("/rewind/prs");
+      goto("/rewind/commits");
     } else if (e.key == "ArrowLeft") {
-      goto("/rewind/languages");
+      goto("/rewind/commits");
     }
   };
 </script>
@@ -84,14 +84,14 @@
       <div id="card_content_heading">
         <div id="previous_page">
           <div class="kbd">&#8592;</div>
-          <h2 class="card_subtitle">Previous page: Languages</h2>
+          <h2 class="card_subtitle">Previous page: Commits</h2>
         </div>
         <div id="heading">
-          <h1 id="card_title">Commits</h1>
-          <h2 class="card_subtitle">git commit -m "Update"</h2>
+          <h1 id="card_title">Pull requests</h1>
+          <h2 class="card_subtitle">open, review, merge</h2>
         </div>
         <div id="next_page">
-          <h2 class="card_subtitle">Next page: PR's</h2>
+          <h2 class="card_subtitle">Next page: Commits</h2>
           <div class="kbd">&#8594;</div>
         </div>
       </div>
@@ -133,6 +133,7 @@
           </ul>
         </div>
 
+        <!-- Day detailed stats -->
         {#if currentlySelectedDate.date != ""}
           <div id="day_details">
             <h1>{currentlySelectedDate.date}</h1>
@@ -186,6 +187,9 @@
             </div>
           </div>
         {/if}
+
+        <!-- Global commit stats -->
+        
       {/if}
     </div>
   </div>

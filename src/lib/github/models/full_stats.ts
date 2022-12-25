@@ -1,3 +1,4 @@
+import type Commit from "./commits";
 import type DayStats from "./day_stats";
 import type PR from "./pr";
 import type Stats from "./stats";
@@ -21,6 +22,8 @@ type FullStats = {
   languageStatsPerRepo: Record<string, Record<string, Stats>>; // Repo name -> language -> stats
 
   // Highest values
+  commitWithLongestMessage?: Commit;
+  commitWithShortestMessage?: Commit;
   mostAdditionsInDay: number;
   mostDeletionsInDay: number;
   mostCommitsInDay: number;
