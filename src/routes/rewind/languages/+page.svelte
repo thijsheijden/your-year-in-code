@@ -37,7 +37,8 @@
   };
 
   const loadAllLanguages = () => {
-    additionsAndDeletionsPerLanguage = fullStats.totalAdditionsAndDeletionsPerLanguage;
+    additionsAndDeletionsPerLanguage =
+      fullStats.totalAdditionsAndDeletionsPerLanguage;
     languages = Object.keys(additionsAndDeletionsPerLanguage);
     languages.sort((a, b): number => {
       let langA = additionsAndDeletionsPerLanguage[a];
@@ -55,7 +56,8 @@
   };
 
   const loadSelectedRepositoryLanguages = () => {
-    additionsAndDeletionsPerLanguage = fullStats.languageStatsPerRepo[currentRepository];
+    additionsAndDeletionsPerLanguage =
+      fullStats.languageStatsPerRepo[currentRepository];
     languages = Object.keys(fullStats.languageStatsPerRepo[currentRepository]);
     languages.sort((a, b): number => {
       let langA = additionsAndDeletionsPerLanguage[a];
@@ -86,8 +88,18 @@
   <div id="card">
     <div id="card_content">
       <div id="card_content_heading">
-        <h1 id="card_title">Languages</h1>
-        <h2 id="card_subtitle">How many lines did you write?</h2>
+        <div id="previous_page">
+          <div class="kbd">&#8592;</div>
+          <h2 class="card_subtitle">Previous page: Global</h2>
+        </div>
+        <div id="heading">
+          <h1 id="card_title">Languages</h1>
+          <h2 class="card_subtitle">How many lines did you write?</h2>
+        </div>
+        <div id="next_page">
+          <h2 class="card_subtitle">Next page: Languages</h2>
+          <div class="kbd">&#8594;</div>
+        </div>
       </div>
 
       {#if fullStats}
@@ -161,11 +173,15 @@
     justify-content: space-between;
     gap: 1rem;
     overflow: scroll;
-    padding: 1rem;
+    padding: 3rem;
 
     .pill {
       flex: 0 0 auto;
     }
+  }
+
+  #repository_selector::-webkit-scrollbar {
+    display: none;
   }
 
   .pill {
@@ -190,14 +206,9 @@
     border-width: 3px;
   }
 
-  #repository_selector::-webkit-scrollbar {
-    display: none;
-  }
-
   #card_grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    margin-top: 2rem;
     gap: 2rem;
   }
 

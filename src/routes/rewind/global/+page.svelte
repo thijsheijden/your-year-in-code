@@ -30,8 +30,15 @@
   <div id="card">
     <div id="card_content">
       <div id="card_content_heading">
-        <h1 id="card_title">Global</h1>
-        <h2 id="card_subtitle">All the big numbers</h2>
+        <div id="previous_page"></div>
+        <div id="heading">
+          <h1 id="card_title">Global</h1>
+          <h2 class="card_subtitle">All the big numbers</h2>
+        </div>
+        <div id="next_page">
+          <h2 class="card_subtitle">Next page: Languages</h2>
+          <div class="kbd">&#8594;</div>
+        </div>
       </div>
 
       <!-- Wait for fullStats to be loaded from local storage -->

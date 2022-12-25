@@ -21,6 +21,12 @@ main {
 }
 
 #card_content_heading {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+#heading {
   text-align: center;
 }
 
@@ -28,7 +34,33 @@ main {
   font-size: 2rem;
 }
 
-#card_subtitle {
+.card_subtitle {
   font-size: 1.25rem;
   opacity: 0.5;
+}
+
+#next_page {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 1rem;
+}
+
+#previous_page {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 1rem;
+}
+
+.kbd {
+  background-color: #eee;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  padding: 0.2em 0.5em;
+  border-top: 5px solid rgba(255, 255, 255, 0.5);
+  border-left: 5px solid rgba(255, 255, 255, 0.5);
+  border-right: 5px solid rgba(0, 0, 0, 0.2);
+  border-bottom: 5px solid rgba(0, 0, 0, 0.2);
+  color: #555;
 }
