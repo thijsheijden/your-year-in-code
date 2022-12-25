@@ -77,14 +77,14 @@
             <div class="stat_card_content">
               <h3>Most loved: {fullStats.mostLovedLanguage}</h3>
               <h4>
-                (<span style="color: #5FC9F8;"
+                (<span style="color: var(--commit-color);"
                   >{fullStats.mostLovedLanguageStats.commits}</span
                 >
                 commits,
-                <span style="color: #39d353;"
+                <span style="color: var(--additions-color);"
                   >+{fullStats.mostLovedLanguageStats.additions}</span
                 >,
-                <span style="color: #ff6961;"
+                <span style="color: var(--deletions-color);"
                   >-{fullStats.mostLovedLanguageStats.deletions}</span
                 >)
               </h4>
@@ -94,14 +94,14 @@
             <div class="stat_card_content">
               <h3>Least loved: {fullStats.leastLovedLanguage}</h3>
               <h4>
-                (<span style="color: #5FC9F8;"
+                (<span style="color: var(--commit-color);"
                   >{fullStats.leastLovedLanguageStats.commits}</span
                 >
                 commits,
-                <span style="color: #39d353;"
+                <span style="color: var(--additions-color);"
                   >+{fullStats.leastLovedLanguageStats.additions}</span
                 >,
-                <span style="color: #ff6961;"
+                <span style="color: var(--deletions-color);"
                   >-{fullStats.leastLovedLanguageStats.deletions}</span
                 >)
               </h4>

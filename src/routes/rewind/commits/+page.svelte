@@ -10,6 +10,15 @@
   let fullStats: FullStats;
   let dates: string[];
   let mostCommits: number;
+  let currentlySelectedDate: {
+    date: string;
+    repos: string[];
+    languages: string[];
+  } = {
+    date: "",
+    repos: [],
+    languages: [],
+  };
 
   // Load stats from store
   onMount(async () => {
@@ -38,13 +47,32 @@
 
   let squareColors = ["#C6E48B", "#7BC96F", "#196127"];
   const getColorForSquare = (date: string): string => {
+    if (date == currentlySelectedDate.date) {
+      return "var(--commit-color)";
+    }
+
     let commits = fullStats.perDay[date].commits;
     if (commits == 0) {
       return "#EBEDF0";
     }
 
     return squareColors[Math.min(Math.floor((commits * 3) / mostCommits), 2)];
-  }
+  };
+
+  const openDayDetailView = (e: MouseEvent, date: string) => {
+    if (date == currentlySelectedDate.date) {
+      currentlySelectedDate.date = "";
+    }
+
+    currentlySelectedDate.date = date;
+    currentlySelectedDate.languages = Object.keys(
+      fullStats.perDay[date].perLanguage
+    );
+    currentlySelectedDate.repos = Array.from(
+      fullStats.perDay[date].reposWorkedIn ?? []
+    );
+    dates = dates;
+  };
 
   const moveToNextPage = (e: KeyboardEvent) => {
     if (e.key == "ArrowRight") {
@@ -102,10 +130,66 @@
           </ul>
           <ul class="squares">
             {#each dates as date}
-              <li style="background-color: {getColorForSquare(date)};" on:click={() => console.log(date)} />
+              <!-- svelte-ignore a11y-click-events-have-key-events -->
+              <li
+                style="background-color: {getColorForSquare(date)};"
+                on:click={(event) => openDayDetailView(event, date)}
+              />
             {/each}
           </ul>
         </div>
+
+        {#if currentlySelectedDate.date != ""}
+          <div id="day_details">
+            <h1>{currentlySelectedDate.date}</h1>
+            <div id="stat_cards">
+              <div class="stat_card">
+                <div class="stat_card_content">
+                  <h3>Commits</h3>
+                  <h4 style="color: var(--commit-color);">
+                    {fullStats.perDay[currentlySelectedDate.date].commits}
+                  </h4>
+                </div>
+              </div>
+              <div class="stat_card">
+                <div class="stat_card_content">
+                  <h3>Additions</h3>
+                  <h4 style="color: var(--additions-color);">
+                    +{fullStats.perDay[currentlySelectedDate.date].additions}
+                  </h4>
+                </div>
+              </div>
+              <div class="stat_card">
+                <div class="stat_card_content">
+                  <h3>Deletions</h3>
+                  <h4 style="color: var(--deletions-color);">
+                    -{fullStats.perDay[currentlySelectedDate.date].deletions}
+                  </h4>
+                </div>
+              </div>
+
+              <!-- Day languages used -->
+              <h3 style="grid-column: 1/-1;">Languages used</h3>
+              {#each currentlySelectedDate.languages as language}
+                <div class="stat_card">
+                  <div class="stat_card_content">
+                    <h3>{language}</h3>
+                    <h4>
+                      (<span style="color: var(--additions-color);"
+                        >+{fullStats.perDay[currentlySelectedDate.date]
+                          .perLanguage[language].additions}</span
+                      >,
+                      <span style="color: var(--deletions-color);"
+                        >-{fullStats.perDay[currentlySelectedDate.date]
+                          .perLanguage[language].deletions}</span
+                      >)
+                    </h4>
+                  </div>
+                </div>
+              {/each}
+            </div>
+          </div>
+        {/if}
       {/if}
     </div>
   </div>
@@ -125,11 +209,21 @@
   .months {
     grid-area: months;
   }
+
   .days {
     grid-area: days;
   }
+
   .squares {
     grid-area: squares;
+    grid-auto-flow: column;
+    grid-auto-columns: var(--square-size);
+    transition: all 0.25s ease-in-out;
+
+    li:hover {
+      cursor: pointer;
+      transform: scale(1.1);
+    }
   }
 
   .graph {
@@ -139,6 +233,7 @@
       "days squares";
     grid-template-columns: auto 1fr;
     grid-gap: 0.5rem;
+    padding: 2rem;
   }
 
   .months {
@@ -165,11 +260,6 @@
     grid-template-rows: repeat(7, var(--square-size));
   }
 
-  .squares {
-    grid-auto-flow: column;
-    grid-auto-columns: var(--square-size);
-  }
-
   /* Other styling */
 
   body {
@@ -178,12 +268,26 @@
     font-size: 12px;
   }
 
-  .graph {
-    padding: 20px;
-    margin: 20px;
-  }
-
   .days li:nth-child(odd) {
     visibility: hidden;
+  }
+
+  #day_details {
+    h1 {
+      text-align: center;
+    }
+  }
+
+  #stat_cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .stat_card {
+    border-radius: 0.5rem;
+    background-color: rgb(32, 32, 34);
+    padding: 1rem;
   }
 </style>
