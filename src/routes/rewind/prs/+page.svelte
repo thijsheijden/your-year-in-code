@@ -323,6 +323,26 @@
               </div>
             {/if}
 
+            <!-- PR approval ratio -->
+            <div class="stat_card">
+              <h3>PR approval ratio</h3>
+              <div class="stat_card_content">
+                <h4 style="color: var(--additions-color);">
+                  {fullStats.PRApprovalRatio}% of your PR's were approved
+                </h4>
+              </div>
+            </div>
+
+            <!-- PR merge ratio -->
+            <div class="stat_card">
+              <h3>PR merge ratio</h3>
+              <div class="stat_card_content">
+                <h4 style="color: var(--merged-color);">
+                  {fullStats.PRMergeRatio}% of your PR's were merged
+                </h4>
+              </div>
+            </div>
+
             {#if fullStats.longestReviewLeft}
               <!-- Longest review left -->
               <div class="stat_card full-width">
