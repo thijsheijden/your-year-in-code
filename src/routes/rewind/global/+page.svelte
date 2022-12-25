@@ -49,19 +49,19 @@
           <div class="stat_card">
             <div class="stat_card_content">
               <h3>Total commits</h3>
-              <h4 style="color: #5FC9F8;">{fullStats.totalCommits}</h4>
+              <h4 style="color: #5FC9F8;">{fullStats.totalCommits.toLocaleString()}</h4>
             </div>
           </div>
           <div class="stat_card">
             <div class="stat_card_content">
               <h3>Total additions</h3>
-              <h4 style="color: #39d353;">+{fullStats.totalAdditions}</h4>
+              <h4 style="color: #39d353;">+{fullStats.totalAdditions.toLocaleString()}</h4>
             </div>
           </div>
           <div class="stat_card">
             <div class="stat_card_content">
               <h3>Total deletions</h3>
-              <h4 style="color: #ff6961;">-{fullStats.totalDeletions}</h4>
+              <h4 style="color: #ff6961;">-{fullStats.totalDeletions.toLocaleString()}</h4>
             </div>
           </div>
 
@@ -70,7 +70,7 @@
           <div class="stat_card">
             <div class="stat_card_content">
               <h3>Number of languages used</h3>
-              <h4 style="color: #5FC9F8;">{fullStats.numberOfLanguagesUsed}</h4>
+              <h4 style="color: #5FC9F8;">{fullStats.numberOfLanguagesUsed.toLocaleString()}</h4>
             </div>
           </div>
           <div class="stat_card">
@@ -78,14 +78,14 @@
               <h3>Most loved: {fullStats.mostLovedLanguage}</h3>
               <h4>
                 (<span style="color: var(--commit-color);"
-                  >{fullStats.mostLovedLanguageStats.commits}</span
+                  >{fullStats.mostLovedLanguageStats.commits?.toLocaleString()}</span
                 >
                 commits,
                 <span style="color: var(--additions-color);"
-                  >+{fullStats.mostLovedLanguageStats.additions}</span
+                  >+{fullStats.mostLovedLanguageStats.additions.toLocaleString()}</span
                 >,
                 <span style="color: var(--deletions-color);"
-                  >-{fullStats.mostLovedLanguageStats.deletions}</span
+                  >-{fullStats.mostLovedLanguageStats.deletions.toLocaleString()}</span
                 >)
               </h4>
             </div>
@@ -95,14 +95,14 @@
               <h3>Least loved: {fullStats.leastLovedLanguage}</h3>
               <h4>
                 (<span style="color: var(--commit-color);"
-                  >{fullStats.leastLovedLanguageStats.commits}</span
+                  >{fullStats.leastLovedLanguageStats.commits?.toLocaleString()}</span
                 >
                 commits,
                 <span style="color: var(--additions-color);"
-                  >+{fullStats.leastLovedLanguageStats.additions}</span
+                  >+{fullStats.leastLovedLanguageStats.additions.toLocaleString()}</span
                 >,
                 <span style="color: var(--deletions-color);"
-                  >-{fullStats.leastLovedLanguageStats.deletions}</span
+                  >-{fullStats.leastLovedLanguageStats.deletions.toLocaleString()}</span
                 >)
               </h4>
             </div>
@@ -113,19 +113,19 @@
           <div class="stat_card">
             <div class="stat_card_content">
               <h3>Opened</h3>
-              <h4 style="color: #5FC9F8;">{fullStats.totalPRsOpened}</h4>
+              <h4 style="color: var(--commit-color);">{fullStats.totalPRsOpened.toLocaleString()}</h4>
             </div>
           </div>
           <div class="stat_card">
             <div class="stat_card_content">
               <h3>Merged</h3>
-              <h4 style="color: rgb(137, 87, 229);">{fullStats.totalPRsMerged} ({fullStats.totalPRChanges} changes)</h4>
+              <h4 style="color: var(--merged-color);">{fullStats.totalPRsMerged.toLocaleString()} ({fullStats.totalPRChanges.toLocaleString()} changes)</h4>
             </div>
           </div>
           <div class="stat_card">
             <div class="stat_card_content">
               <h3>Reviewed</h3>
-              <h4 style="color: #5FC9F8;">{fullStats.totalPRsReviewed} ({fullStats.totalPRChangesReviewed} changes)</h4>
+              <h4 style="color: var(--commit-color);">{fullStats.totalPRsReviewed.toLocaleString()} ({fullStats.totalPRChangesReviewed.toLocaleString()} changes)</h4>
             </div>
           </div>
         </div>

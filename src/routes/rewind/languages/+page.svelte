@@ -136,7 +136,7 @@
                     <h3>Commits</h3>
                     <h4 style="color: var(--commit-color);">
                       {fullStats.totalAdditionsAndDeletionsPerLanguage[language]
-                        .commits ?? 0}
+                        .commits?.toLocaleString()}
                     </h4>
                   </div>
 
@@ -145,7 +145,7 @@
                     <h4 style="color: var(--additions-color);">
                       +{fullStats.totalAdditionsAndDeletionsPerLanguage[
                         language
-                      ].additions}
+                      ].additions.toLocaleString()}
                     </h4>
                   </div>
 
@@ -154,7 +154,7 @@
                     <h4 style="color: var(--deletions-color);">
                       -{fullStats.totalAdditionsAndDeletionsPerLanguage[
                         language
-                      ].deletions}
+                      ].deletions.toLocaleString()}
                     </h4>
                   </div>
                 </div>

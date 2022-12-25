@@ -187,9 +187,6 @@
             </div>
           </div>
         {/if}
-
-        <!-- Global commit stats -->
-        
       {/if}
     </div>
   </div>

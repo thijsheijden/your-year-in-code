@@ -53,10 +53,13 @@
   --commit-color: #5FC9F8;
   --additions-color: #39D353;
   --deletions-color: #FF6961;
+  --merged-color: rgb(137, 87, 229);
+  --background-color: rgb(21, 21, 21);
+  --accent-color: rgb(32, 32, 34);
 }
 
 html {
   font-family: Hack;
-  background-color: rgb(21, 21, 21);
+  background-color: var(--background-color);
   color: white;
 }

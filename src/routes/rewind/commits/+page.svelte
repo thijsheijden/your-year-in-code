@@ -11,10 +11,10 @@
   let dates: string[];
   let mostCommits: number;
   let currentlySelectedDate: {
-    date: string;
+    date?: string;
     languages: string[];
   } = {
-    date: "",
+    date: undefined,
     languages: [],
   };
 
@@ -25,6 +25,7 @@
       goto("/");
     } else {
       fullStats = $statsStore!;
+      console.log(fullStats);
       dates = Object.keys(fullStats.perDay);
       mostCommits = fullStats.mostCommitsInDay;
 
@@ -50,7 +51,7 @@
 
     let commits = fullStats.perDay[date].commits;
     if (commits == 0) {
-      return "#EBEDF0";
+      return "var(--accent-color)";
     }
 
     return squareColors[Math.min(Math.floor((commits * 3) / mostCommits), 2)];
@@ -58,13 +59,14 @@
 
   const openDayDetailView = (e: MouseEvent, date: string) => {
     if (date == currentlySelectedDate.date) {
-      currentlySelectedDate.date = "";
+      currentlySelectedDate.date = undefined;
+    } else {
+      currentlySelectedDate.date = date;
+      currentlySelectedDate.languages = Object.keys(
+        fullStats.perDay[date].perLanguage
+      );
     }
 
-    currentlySelectedDate.date = date;
-    currentlySelectedDate.languages = Object.keys(
-      fullStats.perDay[date].perLanguage
-    );
     dates = dates;
   };
 
@@ -133,7 +135,7 @@
           </ul>
         </div>
 
-        {#if currentlySelectedDate.date != ""}
+        {#if currentlySelectedDate.date}
           <div id="day_details">
             <h1>{currentlySelectedDate.date}</h1>
             <div id="stat_cards">
@@ -143,7 +145,9 @@
                 <div class="stat_card_content">
                   <h3>Commits</h3>
                   <h4 style="color: var(--commit-color);">
-                    {fullStats.perDay[currentlySelectedDate.date].commits}
+                    {fullStats.perDay[
+                      currentlySelectedDate.date
+                    ].commits.toLocaleString()}
                   </h4>
                 </div>
               </div>
@@ -151,7 +155,9 @@
                 <div class="stat_card_content">
                   <h3>Additions</h3>
                   <h4 style="color: var(--additions-color);">
-                    +{fullStats.perDay[currentlySelectedDate.date].additions}
+                    +{fullStats.perDay[
+                      currentlySelectedDate.date
+                    ].additions.toLocaleString()}
                   </h4>
                 </div>
               </div>
@@ -159,7 +165,9 @@
                 <div class="stat_card_content">
                   <h3>Deletions</h3>
                   <h4 style="color: var(--deletions-color);">
-                    -{fullStats.perDay[currentlySelectedDate.date].deletions}
+                    -{fullStats.perDay[
+                      currentlySelectedDate.date
+                    ].deletions.toLocaleString()}
                   </h4>
                 </div>
               </div>
@@ -172,17 +180,132 @@
                     <h3>{language}</h3>
                     <h4>
                       (<span style="color: var(--additions-color);"
-                        >+{fullStats.perDay[currentlySelectedDate.date]
-                          .perLanguage[language].additions}</span
+                        >+{fullStats.perDay[
+                          currentlySelectedDate.date
+                        ].perLanguage[
+                          language
+                        ].additions.toLocaleString()}</span
                       >,
                       <span style="color: var(--deletions-color);"
-                        >-{fullStats.perDay[currentlySelectedDate.date]
-                          .perLanguage[language].deletions}</span
+                        >-{fullStats.perDay[
+                          currentlySelectedDate.date
+                        ].perLanguage[
+                          language
+                        ].deletions.toLocaleString()}</span
                       >)
                     </h4>
                   </div>
                 </div>
               {/each}
+            </div>
+          </div>
+        {:else}
+          <!-- Global commit stats -->
+          <div id="global_commit_stats" class="grid col3">
+            <!-- Largest, smallest and most files changed commits -->
+            <div class="stat_card">
+              <h3>Largest commit</h3>
+              <div class="stat_card_content">
+                <h4 style="color: var(--commit-color);">
+                  {fullStats.largestCommit?.totalChanges.toLocaleString()} changes
+                </h4>
+                <h5>
+                  <a href={fullStats.largestCommit?.htmlURL}
+                    >view on <svg height="16px" width="16px">
+                      <image
+                        xlink:href="/img/github-logo.svg"
+                        height="16px"
+                        width="16px"
+                      />
+                    </svg></a
+                  >
+                </h5>
+              </div>
+            </div>
+
+            <div class="stat_card">
+              <h3>Smallest commit</h3>
+              <div class="stat_card_content">
+                <h4 style="color: var(--commit-color);">
+                  {fullStats.smallestCommit?.totalChanges.toLocaleString()} changes
+                </h4>
+                <h5>
+                  <a href={fullStats.smallestCommit?.htmlURL}
+                    >view on <svg height="16px" width="16px">
+                      <image
+                        xlink:href="/img/github-logo.svg"
+                        height="16px"
+                        width="16px"
+                      />
+                    </svg></a
+                  >
+                </h5>
+              </div>
+            </div>
+
+            <div class="stat_card">
+              <h3>Most file changes</h3>
+              <div class="stat_card_content">
+                <h4 style="color: var(--commit-color);">
+                  {fullStats.commitWithMostFilesChanged?.filesChanged.toLocaleString()}
+                  files changed
+                </h4>
+                <h5>
+                  <a href={fullStats.commitWithMostFilesChanged?.htmlURL}
+                    >view on <svg height="16px" width="16px">
+                      <image
+                        xlink:href="/img/github-logo.svg"
+                        height="16px"
+                        width="16px"
+                      />
+                    </svg></a
+                  >
+                </h5>
+              </div>
+            </div>
+
+            <!-- Longest commit message -->
+            <div class="stat_card full-width">
+              <h3>
+                Longest commit message
+              </h3>
+              <div class="stat_card_content">
+                <p>
+                  "{fullStats.commitWithLongestMessage?.message}"
+                </p>
+                <h5>
+                  <a href={fullStats.largestCommit?.htmlURL}
+                    >view on <svg height="16px" width="16px">
+                      <image
+                        xlink:href="/img/github-logo.svg"
+                        height="16px"
+                        width="16px"
+                      />
+                    </svg></a
+                  >
+                </h5>
+              </div>
+            </div>
+
+            <!-- Shortest commit message -->
+            <div class="stat_card full-width">
+              <h3>Shortest commit message</h3>
+              <div class="stat_card_content">
+                <p>
+                  "{fullStats.commitWithShortestMessage?.message}"
+                </p>
+                <h5>
+                  <a href={fullStats.largestCommit?.htmlURL}
+                    >view on <svg height="16px" width="16px">
+                      <image
+                        xlink:href="/img/github-logo.svg"
+                        height="16px"
+                        width="16px"
+                      />
+                    </svg></a
+                  >
+                </h5>
+              </div>
             </div>
           </div>
         {/if}
@@ -285,5 +408,32 @@
     border-radius: 0.5rem;
     background-color: rgb(32, 32, 34);
     padding: 1rem;
+
+    > * {
+      margin: 0.5rem 0;
+    }
+  }
+
+  .grid {
+    display: grid;
+    gap: 1rem;
+
+    .full-width {
+      grid-column: 1/-1;
+    }
+  }
+
+  .col3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  h5 {
+    margin-top: 1rem;
+
+    a {
+      display: inline;
+      text-decoration: none;
+      color: var(--commit-color);
+    }
   }
 </style>

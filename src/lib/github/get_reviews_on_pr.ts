@@ -12,7 +12,7 @@ export default function getReviewsOnAllRepoPRs(
   return new Promise<Repository>((resolve, reject) => {
     if (repo.PRsInRepo!.length > 0) {
       Promise.all(
-        repo.PRsInRepo!.map(pr => getReviewsForPR(client, user, repo, pr))
+        repo.PRsInRepo!.map((pr: any) => getReviewsForPR(client, user, repo, pr))
       ).then((_: void[]) => {
         resolve(repo);
       })
