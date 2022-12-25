@@ -12,6 +12,7 @@ main {
   border: 1px solid white;
 
   max-height: 80vh;
+  width: 70vw;
   overflow: scroll;
 }
 

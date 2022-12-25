@@ -9,6 +9,9 @@
 
   let fullStats: FullStats;
   let languages: string[];
+  let repositories: string[];
+  let currentRepository = "";
+  let additionsAndDeletionsPerLanguage: Record<string, Stats>;
 
   // Load stats from store
   onMount(async () => {
@@ -17,22 +20,57 @@
       goto("/");
     } else {
       fullStats = $statsStore!;
-      languages = Object.keys(fullStats.totalAdditionsAndDeletionsPerLanguage);
-      languages.sort((a, b): number => {
-        let langA = fullStats.totalAdditionsAndDeletionsPerLanguage[a]
-        let changesA = langA.additions + langA.deletions
-        let langB = fullStats.totalAdditionsAndDeletionsPerLanguage[b]
-        let changesB = langB.additions + langB.deletions
-        if (changesA > changesB) {
-          return -1;
-        } else if (changesA < changesB) {
-          return 1;
-        }
-
-        return 0;
-      })
+      loadAllLanguages();
+      repositories = Object.keys(fullStats.languageStatsPerRepo);
     }
   });
+
+  const repositoryClicked = (repository: string) => {
+    // If the repository clicked is the one already selected, unselect it
+    if (repository == currentRepository) {
+      currentRepository = "";
+      loadAllLanguages();
+    } else {
+      currentRepository = repository;
+      loadSelectedRepositoryLanguages();
+    }
+  };
+
+  const loadAllLanguages = () => {
+    additionsAndDeletionsPerLanguage = fullStats.totalAdditionsAndDeletionsPerLanguage;
+    languages = Object.keys(additionsAndDeletionsPerLanguage);
+    languages.sort((a, b): number => {
+      let langA = additionsAndDeletionsPerLanguage[a];
+      let changesA = langA.additions + langA.deletions;
+      let langB = additionsAndDeletionsPerLanguage[b];
+      let changesB = langB.additions + langB.deletions;
+      if (changesA > changesB) {
+        return -1;
+      } else if (changesA < changesB) {
+        return 1;
+      }
+
+      return 0;
+    });
+  };
+
+  const loadSelectedRepositoryLanguages = () => {
+    additionsAndDeletionsPerLanguage = fullStats.languageStatsPerRepo[currentRepository];
+    languages = Object.keys(fullStats.languageStatsPerRepo[currentRepository]);
+    languages.sort((a, b): number => {
+      let langA = additionsAndDeletionsPerLanguage[a];
+      let changesA = langA.additions + langA.deletions;
+      let langB = additionsAndDeletionsPerLanguage[b];
+      let changesB = langB.additions + langB.deletions;
+      if (changesA > changesB) {
+        return -1;
+      } else if (changesA < changesB) {
+        return 1;
+      }
+
+      return 0;
+    });
+  };
 
   const moveToNextPage = (e: KeyboardEvent) => {
     if (e.key == "ArrowRight") {
@@ -52,27 +90,59 @@
         <h2 id="card_subtitle">How many lines did you write?</h2>
       </div>
 
+      {#if fullStats}
+        <div id="repository_selector">
+          {#if currentRepository == ""}
+            {#each repositories as repository}
+              <!-- svelte-ignore a11y-click-events-have-key-events -->
+              <div on:click={() => repositoryClicked(repository)} class="pill">
+                <h1>{repository}</h1>
+              </div>
+            {/each}
+          {:else}
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <div
+              on:click={() => repositoryClicked(currentRepository)}
+              class="pill active"
+            >
+              <h1>{currentRepository}</h1>
+            </div>
+          {/if}
+        </div>
+      {/if}
+
       <!-- Wait for fullStats to be loaded from local storage -->
       {#if fullStats}
-        <div id="card_list">
+        <div id="card_grid">
           {#each languages as language}
             <div class="stat_card">
               <div class="stat_card_content">
                 <h2 class="stat_card_content_title">{language}</h2>
                 <div class="stat_card_horizontal_flex">
-                  <div class="item">
+                  <div>
                     <h3>Commits</h3>
-                    <h4 style="color: var(--commit-color);">{fullStats.totalAdditionsAndDeletionsPerLanguage[language].commits ?? 0}</h4>
+                    <h4 style="color: var(--commit-color);">
+                      {fullStats.totalAdditionsAndDeletionsPerLanguage[language]
+                        .commits ?? 0}
+                    </h4>
                   </div>
 
-                  <div class="item">
+                  <div>
                     <h3>Additions</h3>
-                    <h4 style="color: var(--additions-color);">+{fullStats.totalAdditionsAndDeletionsPerLanguage[language].additions}</h4>
+                    <h4 style="color: var(--additions-color);">
+                      +{fullStats.totalAdditionsAndDeletionsPerLanguage[
+                        language
+                      ].additions}
+                    </h4>
                   </div>
 
-                  <div class="item">
+                  <div>
                     <h3>Deletions</h3>
-                    <h4 style="color: var(--deletions-color);">-{fullStats.totalAdditionsAndDeletionsPerLanguage[language].deletions}</h4>
+                    <h4 style="color: var(--deletions-color);">
+                      -{fullStats.totalAdditionsAndDeletionsPerLanguage[
+                        language
+                      ].deletions}
+                    </h4>
                   </div>
                 </div>
               </div>
@@ -85,9 +155,48 @@
 </main>
 
 <style lang="scss">
-  #card_list {
+  #repository_selector {
     display: flex;
-    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    overflow: scroll;
+    padding: 1rem;
+
+    .pill {
+      flex: 0 0 auto;
+    }
+  }
+
+  .pill {
+    border: 1px solid rgba(223, 142, 228, 1);
+    background-color: rgba(223, 142, 228, 0.2);
+    border-radius: 2rem;
+    padding: 0.25rem 1.5rem;
+    transition: all 0.25s ease-in-out;
+
+    h1 {
+      color: rgba(223, 142, 228, 1);
+      font-size: 1rem;
+    }
+
+    &:hover {
+      cursor: pointer;
+      transform: scale(1.05);
+    }
+  }
+
+  .active {
+    border-width: 3px;
+  }
+
+  #repository_selector::-webkit-scrollbar {
+    display: none;
+  }
+
+  #card_grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     margin-top: 2rem;
     gap: 2rem;
   }
@@ -108,14 +217,13 @@
 
   .stat_card_content_title {
     margin-bottom: 1rem;
+    text-align: center;
   }
 
   .stat_card_horizontal_flex {
     display: flex;
+    justify-content: space-evenly;
+    align-items: center;
     gap: 1rem;
-
-    .item {
-
-    }
   }
 </style>
