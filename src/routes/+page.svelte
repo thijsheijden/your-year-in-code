@@ -10,16 +10,23 @@
   let loadPrivateRepos = false;
 
   // Window dimensions
-  let innerWidth: number, innerHeight: number = 0;
+  let innerWidth: number,
+    innerHeight: number = 0;
 
-  let possibleBlockColors: string[] = ['rgb(155, 233, 168)', 'rgb(64, 196, 99)', 'rgb(48, 161, 78)', 'rgb(33, 110, 57)'];
+  let possibleBlockColors: string[] = [
+    "rgb(155, 233, 168)",
+    "rgb(64, 196, 99)",
+    "rgb(48, 161, 78)",
+    "rgb(33, 110, 57)",
+  ];
   type block = {
-    color: string,
-    x: number,
-    y: number,
-  }
+    color: string;
+    x: number;
+    y: number;
+  };
   let blocks: block[] = [];
-  let horizontalBlockCount: number, verticalBlockCount: number = 0;
+  let horizontalBlockCount: number,
+    verticalBlockCount: number = 0;
 
   onMount(() => {
     // Calculate the block size to use
@@ -28,33 +35,36 @@
     horizontalBlockCount = Math.floor(innerWidth / 54);
     verticalBlockCount = Math.floor(innerHeight / 54);
 
-    console.log(horizontalBlockCount)
-    console.log(verticalBlockCount)
+    console.log(horizontalBlockCount);
+    console.log(verticalBlockCount);
 
     // Place a random block on the screen every 500ms
     const newBlockInterval = setInterval(addNewBlock, 500);
 
     // Clear intervals on page close
     return () => {
-			clearInterval(newBlockInterval);
-		};
-  })
+      clearInterval(newBlockInterval);
+    };
+  });
 
   const addNewBlock = () => {
     let newBlock: block = {
-      color: possibleBlockColors[Math.floor(Math.random() * possibleBlockColors.length)],
+      color:
+        possibleBlockColors[
+          Math.floor(Math.random() * possibleBlockColors.length)
+        ],
       x: Math.floor(Math.random() * horizontalBlockCount) * 54,
-      y: Math.floor(Math.random() * verticalBlockCount) * 54
-    }
+      y: Math.floor(Math.random() * verticalBlockCount) * 54,
+    };
 
-    blocks = [...blocks, newBlock]
-  }
+    blocks = [...blocks, newBlock];
+  };
 
   const removeClickedBlock = (index: number) => {
     blocks.splice(index, 1);
     blocks = blocks;
     score += 1;
-  }
+  };
 
   // MARK: OAuth token listener code
   const openOAuthWindow = () => {
@@ -65,15 +75,13 @@
     const strWindowFeatures =
       "toolbar=no, menubar=no, width=600, height=700, top=100, left=100";
 
-    let url = "https://github.com/login/oauth/authorize?client_id=961ecc55299958adb91f&scope=repo:status%20read:user"
+    let url =
+      "https://github.com/login/oauth/authorize?client_id=961ecc55299958adb91f&scope=repo:status%20read:user";
     if (loadPrivateRepos) {
-      url = "https://github.com/login/oauth/authorize?client_id=961ecc55299958adb91f&scope=repo%20read:user"
+      url =
+        "https://github.com/login/oauth/authorize?client_id=961ecc55299958adb91f&scope=repo%20read:user";
     }
-    window.open(
-      url,
-      "Github Oauth",
-      strWindowFeatures
-    );
+    window.open(url, "Github Oauth", strWindowFeatures);
 
     // add the listener for receiving a message from the popup
     window.addEventListener("message", (e) => receiveMessage(e), false);
@@ -98,12 +106,21 @@
       <div id="content_padded">
         <h1>YOUR_YEAR_IN_CODE;</h1>
         <h2>Like Spotify wrapped, but for code.</h2>
-        <div id="flex">
+        <div class="flex">
           <h4>Private repos</h4>
-          <input bind:checked={loadPrivateRepos} type="checkbox" name="private_repos" id="">
+          <input
+            bind:checked={loadPrivateRepos}
+            type="checkbox"
+            name="private_repos"
+            id=""
+          />
         </div>
-        <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <a id="login_button" on:click={openOAuthWindow}>Log in using Github</a>
+        <div class="flex">
+          <!-- svelte-ignore a11y-click-events-have-key-events -->
+          <a class="button" id="login_button" on:click={openOAuthWindow}>Log in using Github</a
+          >
+          <a class="button" id="more_info_button" href="/info">How it works</a>
+        </div>
         <h5 style="padding-top: 2em;">
           {#if score > 0}
             Boxes destroyed: {score}
@@ -116,7 +133,14 @@
   <!-- Add blocks -->
   {#each blocks as block, index}
     <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <div in:fade on:click={() => {removeClickedBlock(index)}} class="block" style="background-color: {block.color}; left: {block.x}px; top: {block.y}px;"></div>
+    <div
+      in:fade
+      on:click={() => {
+        removeClickedBlock(index);
+      }}
+      class="block"
+      style="background-color: {block.color}; left: {block.x}px; top: {block.y}px;"
+    />
   {/each}
 </main>
 
@@ -139,7 +163,7 @@
     border: 1px solid rgba(46, 204, 113, 0.5);
     z-index: 1;
   }
-  
+
   #content_padded {
     padding: 2em;
     text-align: center;
@@ -155,24 +179,34 @@
     padding-bottom: 1rem;
   }
 
-  #login_button {
+  .button {
     display: block;
     padding: 0.5em 1em;
     width: max-content;
-    margin: 0 auto;
-    
+
     border-radius: 1em;
-    border: 1px solid rgba(46, 204, 113, 1);
-    color: rgb(46, 204, 113);
-    background-color: rgba(46, 204, 113, 0.2);
+    border: 1px solid;
 
     font-weight: bold;
     transition: all 0.25s ease-in-out;
   }
 
-  #login_button:hover {
+  .button:hover {
     cursor: pointer;
     transform: scale(1.08);
+  }
+
+  #login_button {
+    border-color: rgba(46, 204, 113, 1);
+    color: rgb(46, 204, 113);
+    background-color: rgba(46, 204, 113, 0.2);
+  }
+
+  #more_info_button {
+    text-decoration: none;
+    border-color: 1px rgba(247, 136, 100, 0.3) solid;
+    color: rgb(247, 136, 100);
+    background-color: rgba(217, 63, 11, 0.18);
   }
 
   /* MARK: Falling blocks */
@@ -192,11 +226,11 @@
     transform: translate(50%, -50%) scale(1.25);
   }
 
-  #flex {
+  .flex {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 0.5rem;
+    gap: 1rem;
 
     margin: 1rem 0;
   }
