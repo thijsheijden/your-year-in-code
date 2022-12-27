@@ -56,9 +56,7 @@
   const openDayDetailView = (e: MouseEvent, date: string) => {};
 
   const moveToNextPage = (e: KeyboardEvent) => {
-    if (e.key == "ArrowRight") {
-      goto("/rewind/global");
-    } else if (e.key == "ArrowLeft") {
+    if (e.key == "ArrowLeft") {
       goto("/rewind/commits");
     }
   };
@@ -77,10 +75,7 @@
           <h1 id="card_title">Pull requests</h1>
           <h2 class="card_subtitle">open, review, merge</h2>
         </div>
-        <div id="next_page">
-          <h2 class="card_subtitle">Next page: Commits</h2>
-          <div class="kbd">&#8594;</div>
-        </div>
+        <div id="next_page"></div>
       </div>
 
       <!-- Wait for fullStats to be loaded from local storage -->
@@ -120,276 +115,210 @@
           </ul>
         </div>
 
-        {#if currentlySelectedDate.date}
-          <div id="day_details">
-            <h1>{currentlySelectedDate.date}</h1>
-            <div id="stat_cards">
-              <!-- Global day stats -->
-              <h3 style="grid-column: 1/-1;">Overview</h3>
-              <div class="stat_card">
-                <div class="stat_card_content">
-                  <h3>Commits</h3>
-                  <h4 style="color: var(--commit-color);">
-                    {fullStats.perDay[
-                      currentlySelectedDate.date
-                    ].commits.toLocaleString()}
-                  </h4>
-                </div>
+        <!-- Global PR stats -->
+        <div class="grid col3">
+          {#if fullStats.largestPROpened}
+            <!-- Largest PR opened -->
+            <div class="stat_card">
+              <h3>Largest PR opened</h3>
+              <div class="stat_card_content">
+                <h4 style="color: var(--commit-color);">
+                  {fullStats.largestPROpened?.total_changes.toLocaleString()} changes
+                </h4>
+                <h5>
+                  <a href={fullStats.largestPROpened?.URL}
+                    >view on <svg height="16px" width="16px">
+                      <image
+                        xlink:href="/img/github-logo.svg"
+                        height="16px"
+                        width="16px"
+                      />
+                    </svg></a
+                  >
+                </h5>
               </div>
-              <div class="stat_card">
-                <div class="stat_card_content">
-                  <h3>Additions</h3>
-                  <h4 style="color: var(--additions-color);">
-                    +{fullStats.perDay[
-                      currentlySelectedDate.date
-                    ].additions.toLocaleString()}
-                  </h4>
-                </div>
-              </div>
-              <div class="stat_card">
-                <div class="stat_card_content">
-                  <h3>Deletions</h3>
-                  <h4 style="color: var(--deletions-color);">
-                    -{fullStats.perDay[
-                      currentlySelectedDate.date
-                    ].deletions.toLocaleString()}
-                  </h4>
-                </div>
-              </div>
+            </div>
 
-              <!-- Day languages used -->
-              <h3 style="grid-column: 1/-1;">Languages used</h3>
-              {#each currentlySelectedDate.languages as language}
-                <div class="stat_card">
-                  <div class="stat_card_content">
-                    <h3>{language}</h3>
-                    <h4>
-                      (<span style="color: var(--additions-color);"
-                        >+{fullStats.perDay[
-                          currentlySelectedDate.date
-                        ].perLanguage[
-                          language
-                        ].additions.toLocaleString()}</span
-                      >,
-                      <span style="color: var(--deletions-color);"
-                        >-{fullStats.perDay[
-                          currentlySelectedDate.date
-                        ].perLanguage[
-                          language
-                        ].deletions.toLocaleString()}</span
-                      >)
-                    </h4>
-                  </div>
-                </div>
-              {/each}
+            <!-- Smallest PR opened -->
+            <div class="stat_card">
+              <h3>Smallest PR opened</h3>
+              <div class="stat_card_content">
+                <h4 style="color: var(--commit-color);">
+                  {fullStats.smallestPROpened?.total_changes.toLocaleString()}
+                  changes
+                </h4>
+                <h5>
+                  <a href={fullStats.smallestPROpened?.URL}
+                    >view on <svg height="16px" width="16px">
+                      <image
+                        xlink:href="/img/github-logo.svg"
+                        height="16px"
+                        width="16px"
+                      />
+                    </svg></a
+                  >
+                </h5>
+              </div>
+            </div>
+          {/if}
+
+          {#if fullStats.largestPRMerged}
+            <!-- Largest PR merged -->
+            <div class="stat_card">
+              <h3>Largest PR merged</h3>
+              <div class="stat_card_content">
+                <h4 style="color: var(--commit-color);">
+                  {fullStats.largestPRMerged?.total_changes.toLocaleString()} changes
+                </h4>
+                <h5>
+                  <a href={fullStats.largestPRMerged?.URL}
+                    >view on <svg height="16px" width="16px">
+                      <image
+                        xlink:href="/img/github-logo.svg"
+                        height="16px"
+                        width="16px"
+                      />
+                    </svg></a
+                  >
+                </h5>
+              </div>
+            </div>
+
+            <!-- Smallest PR merged -->
+            <div class="stat_card">
+              <h3>Smallest PR merged</h3>
+              <div class="stat_card_content">
+                <h4 style="color: var(--commit-color);">
+                  {fullStats.smallestPRMerged?.total_changes.toLocaleString()}
+                  changes
+                </h4>
+                <h5>
+                  <a href={fullStats.smallestPRMerged?.URL}
+                    >view on <svg height="16px" width="16px">
+                      <image
+                        xlink:href="/img/github-logo.svg"
+                        height="16px"
+                        width="16px"
+                      />
+                    </svg></a
+                  >
+                </h5>
+              </div>
+            </div>
+          {/if}
+
+          {#if fullStats.largestPRReviewed}
+            <!-- Largest PR reviewed -->
+            <div class="stat_card">
+              <h3>Largest PR reviewed</h3>
+              <div class="stat_card_content">
+                <h4 style="color: var(--commit-color);">
+                  {fullStats.largestPRReviewed?.total_changes.toLocaleString()}
+                  changes
+                </h4>
+                <h5>
+                  <a href={fullStats.largestPRReviewed?.URL}
+                    >view on <svg height="16px" width="16px">
+                      <image
+                        xlink:href="/img/github-logo.svg"
+                        height="16px"
+                        width="16px"
+                      />
+                    </svg></a
+                  >
+                </h5>
+              </div>
+            </div>
+
+            <!-- Smallest PR reviewed -->
+            <div class="stat_card">
+              <h3>Smallest PR reviewed</h3>
+              <div class="stat_card_content">
+                <h4 style="color: var(--commit-color);">
+                  {fullStats.smallestPRReviewed?.total_changes.toLocaleString()}
+                  changes
+                </h4>
+                <h5>
+                  <a href={fullStats.smallestPRReviewed?.URL}
+                    >view on <svg height="16px" width="16px">
+                      <image
+                        xlink:href="/img/github-logo.svg"
+                        height="16px"
+                        width="16px"
+                      />
+                    </svg></a
+                  >
+                </h5>
+              </div>
+            </div>
+          {/if}
+
+          <!-- PR approval ratio -->
+          <div class="stat_card">
+            <h3>PR approval ratio</h3>
+            <div class="stat_card_content">
+              <h4 style="color: var(--additions-color);">
+                {fullStats.PRApprovalRatio}% of your PR's were approved
+              </h4>
             </div>
           </div>
-        {:else}
-          <!-- Global PR stats -->
-          <div class="grid col3">
-            {#if fullStats.largestPROpened}
-              <!-- Largest PR opened -->
-              <div class="stat_card">
-                <h3>Largest PR opened</h3>
-                <div class="stat_card_content">
-                  <h4 style="color: var(--commit-color);">
-                    {fullStats.largestPROpened?.total_changes.toLocaleString()} changes
-                  </h4>
-                  <h5>
-                    <a href={fullStats.largestPROpened?.URL}
-                      >view on <svg height="16px" width="16px">
-                        <image
-                          xlink:href="/img/github-logo.svg"
-                          height="16px"
-                          width="16px"
-                        />
-                      </svg></a
-                    >
-                  </h5>
-                </div>
-              </div>
 
-              <!-- Smallest PR opened -->
-              <div class="stat_card">
-                <h3>Smallest PR opened</h3>
-                <div class="stat_card_content">
-                  <h4 style="color: var(--commit-color);">
-                    {fullStats.smallestPROpened?.total_changes.toLocaleString()}
-                    changes
-                  </h4>
-                  <h5>
-                    <a href={fullStats.smallestPROpened?.URL}
-                      >view on <svg height="16px" width="16px">
-                        <image
-                          xlink:href="/img/github-logo.svg"
-                          height="16px"
-                          width="16px"
-                        />
-                      </svg></a
-                    >
-                  </h5>
-                </div>
-              </div>
-            {/if}
-
-            {#if fullStats.largestPRMerged}
-              <!-- Largest PR merged -->
-              <div class="stat_card">
-                <h3>Largest PR merged</h3>
-                <div class="stat_card_content">
-                  <h4 style="color: var(--commit-color);">
-                    {fullStats.largestPRMerged?.total_changes.toLocaleString()} changes
-                  </h4>
-                  <h5>
-                    <a href={fullStats.largestPRMerged?.URL}
-                      >view on <svg height="16px" width="16px">
-                        <image
-                          xlink:href="/img/github-logo.svg"
-                          height="16px"
-                          width="16px"
-                        />
-                      </svg></a
-                    >
-                  </h5>
-                </div>
-              </div>
-
-              <!-- Smallest PR merged -->
-              <div class="stat_card">
-                <h3>Smallest PR merged</h3>
-                <div class="stat_card_content">
-                  <h4 style="color: var(--commit-color);">
-                    {fullStats.smallestPRMerged?.total_changes.toLocaleString()}
-                    changes
-                  </h4>
-                  <h5>
-                    <a href={fullStats.smallestPRMerged?.URL}
-                      >view on <svg height="16px" width="16px">
-                        <image
-                          xlink:href="/img/github-logo.svg"
-                          height="16px"
-                          width="16px"
-                        />
-                      </svg></a
-                    >
-                  </h5>
-                </div>
-              </div>
-            {/if}
-
-            {#if fullStats.largestPRReviewed}
-              <!-- Largest PR reviewed -->
-              <div class="stat_card">
-                <h3>Largest PR reviewed</h3>
-                <div class="stat_card_content">
-                  <h4 style="color: var(--commit-color);">
-                    {fullStats.largestPRReviewed?.total_changes.toLocaleString()}
-                    changes
-                  </h4>
-                  <h5>
-                    <a href={fullStats.largestPRReviewed?.URL}
-                      >view on <svg height="16px" width="16px">
-                        <image
-                          xlink:href="/img/github-logo.svg"
-                          height="16px"
-                          width="16px"
-                        />
-                      </svg></a
-                    >
-                  </h5>
-                </div>
-              </div>
-
-              <!-- Smallest PR reviewed -->
-              <div class="stat_card">
-                <h3>Smallest PR reviewed</h3>
-                <div class="stat_card_content">
-                  <h4 style="color: var(--commit-color);">
-                    {fullStats.smallestPRReviewed?.total_changes.toLocaleString()}
-                    changes
-                  </h4>
-                  <h5>
-                    <a href={fullStats.smallestPRReviewed?.URL}
-                      >view on <svg height="16px" width="16px">
-                        <image
-                          xlink:href="/img/github-logo.svg"
-                          height="16px"
-                          width="16px"
-                        />
-                      </svg></a
-                    >
-                  </h5>
-                </div>
-              </div>
-            {/if}
-
-            <!-- PR approval ratio -->
-            <div class="stat_card">
-              <h3>PR approval ratio</h3>
-              <div class="stat_card_content">
-                <h4 style="color: var(--additions-color);">
-                  {fullStats.PRApprovalRatio}% of your PR's were approved
-                </h4>
-              </div>
+          <!-- PR merge ratio -->
+          <div class="stat_card">
+            <h3>PR merge ratio</h3>
+            <div class="stat_card_content">
+              <h4 style="color: var(--merged-color);">
+                {fullStats.PRMergeRatio}% of your PR's were merged
+              </h4>
             </div>
-
-            <!-- PR merge ratio -->
-            <div class="stat_card">
-              <h3>PR merge ratio</h3>
-              <div class="stat_card_content">
-                <h4 style="color: var(--merged-color);">
-                  {fullStats.PRMergeRatio}% of your PR's were merged
-                </h4>
-              </div>
-            </div>
-
-            {#if fullStats.longestReviewLeft}
-              <!-- Longest review left -->
-              <div class="stat_card full-width">
-                <h3>Longest review left</h3>
-                <div class="stat_card_content">
-                  <p>
-                    {fullStats.longestReviewLeft.body}
-                  </p>
-                  <h5>
-                    <a href={fullStats.longestReviewLeft.URL}
-                      >view on <svg height="16px" width="16px">
-                        <image
-                          xlink:href="/img/github-logo.svg"
-                          height="16px"
-                          width="16px"
-                        />
-                      </svg></a
-                    >
-                  </h5>
-                </div>
-              </div>
-            {/if}
-
-            {#if fullStats.shortestReviewLeft}
-              <!-- Longest review left -->
-              <div class="stat_card full-width">
-                <h3>Shortest review left</h3>
-                <div class="stat_card_content">
-                  <p>
-                    {fullStats.shortestReviewLeft.body}
-                  </p>
-                  <h5>
-                    <a href={fullStats.shortestReviewLeft.URL}
-                      >view on <svg height="16px" width="16px">
-                        <image
-                          xlink:href="/img/github-logo.svg"
-                          height="16px"
-                          width="16px"
-                        />
-                      </svg></a
-                    >
-                  </h5>
-                </div>
-              </div>
-            {/if}
           </div>
-        {/if}
+
+          {#if fullStats.longestReviewLeft}
+            <!-- Longest review left -->
+            <div class="stat_card full-width">
+              <h3>Longest review left</h3>
+              <div class="stat_card_content">
+                <p>
+                  {fullStats.longestReviewLeft.body}
+                </p>
+                <h5>
+                  <a href={fullStats.longestReviewLeft.URL}
+                    >view on <svg height="16px" width="16px">
+                      <image
+                        xlink:href="/img/github-logo.svg"
+                        height="16px"
+                        width="16px"
+                      />
+                    </svg></a
+                  >
+                </h5>
+              </div>
+            </div>
+          {/if}
+
+          {#if fullStats.shortestReviewLeft}
+            <!-- Longest review left -->
+            <div class="stat_card full-width">
+              <h3>Shortest review left</h3>
+              <div class="stat_card_content">
+                <p>
+                  {fullStats.shortestReviewLeft.body}
+                </p>
+                <h5>
+                  <a href={fullStats.shortestReviewLeft.URL}
+                    >view on <svg height="16px" width="16px">
+                      <image
+                        xlink:href="/img/github-logo.svg"
+                        height="16px"
+                        width="16px"
+                      />
+                    </svg></a
+                  >
+                </h5>
+              </div>
+            </div>
+          {/if}
+        </div>
       {/if}
     </div>
   </div>

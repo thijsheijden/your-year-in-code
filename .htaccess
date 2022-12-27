@@ -1,0 +1,11 @@
+RewriteEngine on
+#force https+www
+RewriteCond %{HTTPS} off [OR]
+RewriteCond %{HTTP_HOST} !^www\.
+RewriteCond %{HTTP_HOST} ^(?:www\.)?(.+)$
+RewriteRule (.*) https://www.%1/$1 [NE,L,R]
+#Remove .html
+RewriteCond %{THE_REQUEST} /([^.]+)\.html [NC]
+RewriteRule ^ /%1 [L,R]
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.*?)/?$ /$1.html [L]

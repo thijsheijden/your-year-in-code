@@ -6,6 +6,9 @@
   // The users score
   let score = 0;
 
+  // Whether to load private repos
+  let loadPrivateRepos = false;
+
   // Window dimensions
   let innerWidth: number, innerHeight: number = 0;
 
@@ -62,8 +65,12 @@
     const strWindowFeatures =
       "toolbar=no, menubar=no, width=600, height=700, top=100, left=100";
 
+    let url = "https://github.com/login/oauth/authorize?client_id=961ecc55299958adb91f&scope=repo:status%20read:user"
+    if (loadPrivateRepos) {
+      url = "https://github.com/login/oauth/authorize?client_id=961ecc55299958adb91f&scope=repo%20read:user"
+    }
     window.open(
-      "https://github.com/login/oauth/authorize?client_id=961ecc55299958adb91f&scope=repo%20read:user",
+      url,
       "Github Oauth",
       strWindowFeatures
     );
@@ -75,7 +82,7 @@
   const receiveMessage = (e: MessageEvent<string>) => {
     // Do we trust the sender of this message? (might be
     // different from what we originally opened, for example).
-    if (!e.isTrusted || e.origin !== "http://dev.youryearincode.com:5173") {
+    if (!e.isTrusted || e.origin !== "https://www.youryearincode.com") {
       return;
     }
 
@@ -91,9 +98,12 @@
       <div id="content_padded">
         <h1>YOUR_YEAR_IN_CODE;</h1>
         <h2>Like Spotify wrapped, but for code.</h2>
+        <div id="flex">
+          <h4>Private repos</h4>
+          <input bind:checked={loadPrivateRepos} type="checkbox" name="private_repos" id="">
+        </div>
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <a id="login_button" on:click={openOAuthWindow}>Log in using Github</a>
-
         <h5 style="padding-top: 2em;">
           {#if score > 0}
             Boxes destroyed: {score}
@@ -137,12 +147,12 @@
 
   h1 {
     font-size: 4em;
-    padding-bottom: 0.5em;
+    padding-bottom: 0.5rem;
   }
 
   h2 {
     font-weight: lighter;
-    padding-bottom: 2em;
+    padding-bottom: 1rem;
   }
 
   #login_button {
@@ -180,5 +190,14 @@
   .block:hover {
     cursor: pointer;
     transform: translate(50%, -50%) scale(1.25);
+  }
+
+  #flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+
+    margin: 1rem 0;
   }
 </style>
