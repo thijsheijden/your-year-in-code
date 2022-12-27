@@ -120,8 +120,21 @@
           <a class="button" id="login_button" on:click={openOAuthWindow}
             >Log in using Github</a
           >
-          <a class="button" id="more_info_button" href="/how-it-works">How it works</a>
+          <a class="button" id="more_info_button" href="/how-it-works"
+            >How it works</a
+          >
         </div>
+
+        <a href="https://github.com/thijsheijden/your-year-in-code" style="position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%);"
+          >view on <svg height="16px" width="16px">
+            <image
+              xlink:href="/img/github-logo.svg"
+              height="16px"
+              width="16px"
+            />
+          </svg></a
+        >
+
         <h5 style="padding-top: 2em;">
           {#if score > 0}
             Boxes destroyed: {score}
@@ -168,6 +181,7 @@
   #content_padded {
     padding: 2em;
     text-align: center;
+    position: relative;
   }
 
   h1 {
@@ -234,5 +248,10 @@
     gap: 1rem;
 
     margin: 1rem 0;
+  }
+
+  a {
+    text-decoration: none;
+    color: var(--commit-color);
   }
 </style>
