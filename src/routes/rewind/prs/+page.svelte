@@ -62,14 +62,24 @@
       goto("/rewind/thanks")
     }
   };
+
+  const moveToNextPage = () => {
+    goto("/rewind/thanks");
+  }
+
+  const moveToPreviousPage = () => {
+    goto("/rewind/commits");
+  }
 </script>
 
 <svelte:window on:keydown={handleKeyboardInput} />
 <main>
   <div id="card">
     <div id="card_content">
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
       <div id="card_content_heading">
-        <div id="previous_page">
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <div id="previous_page" on:click={moveToPreviousPage}>
           <div class="kbd">&#8592;</div>
           <h2 class="card_subtitle">Previous page: Commits</h2>
         </div>
@@ -77,7 +87,7 @@
           <h1 id="card_title">Pull requests</h1>
           <h2 class="card_subtitle">open, review, merge</h2>
         </div>
-        <div id="next_page">
+        <div id="next_page" on:click={moveToNextPage}>
           <h2 class="card_subtitle">Next page: Thanks</h2>
           <div class="kbd">&#8594;</div>
         </div>

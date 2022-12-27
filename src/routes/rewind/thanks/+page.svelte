@@ -6,6 +6,10 @@
       goto("/rewind/prs");
     }
   };
+
+  const moveToPreviousPage = () => {
+    goto("/rewind/prs");
+  }
 </script>
 
 <svelte:window on:keydown={handleKeyboardInput} />
@@ -13,7 +17,8 @@
   <div id="card">
     <div id="card_content">
       <div id="card_content_heading">
-        <div id="previous_page">
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <div id="previous_page" on:click={moveToPreviousPage}>
           <div class="kbd">&#8592;</div>
           <h2 class="card_subtitle">Previous page: PR's</h2>
         </div>

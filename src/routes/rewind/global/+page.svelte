@@ -23,6 +23,10 @@
       goto("/rewind/languages")
     }
   }
+
+  const moveToNextPage = () => {
+    goto("/rewind/languages")
+  }
 </script>
 
 <svelte:window on:keydown={handleKeyboardInput}/>
@@ -35,7 +39,8 @@
           <h1 id="card_title">Global</h1>
           <h2 class="card_subtitle">All the big numbers</h2>
         </div>
-        <div id="next_page">
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <div id="next_page" on:click={moveToNextPage}>
           <h2 class="card_subtitle">Next page: Languages</h2>
           <div class="kbd">&#8594;</div>
         </div>

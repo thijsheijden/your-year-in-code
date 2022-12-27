@@ -52,6 +52,12 @@ main {
   align-items: center;
   justify-content: end;
   gap: 1rem;
+  transition: all 0.25s ease-in-out;
+}
+
+#next_page:hover {
+  cursor: pointer;
+  transform: scale(1.05);
 }
 
 #previous_page {
@@ -59,6 +65,12 @@ main {
   align-items: center;
   justify-content: start;
   gap: 1rem;
+  transition: all 0.25s ease-in-out;
+}
+
+#previous_page:hover {
+  cursor: pointer;
+  transform: scale(1.05);
 }
 
 .kbd {
