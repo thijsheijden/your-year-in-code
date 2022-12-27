@@ -100,39 +100,41 @@
 
       <!-- Wait for fullStats to be loaded from local storage -->
       {#if fullStats}
-        <div class="graph">
-          <ul class="months">
-            <li>Jan</li>
-            <li>Feb</li>
-            <li>Mar</li>
-            <li>Apr</li>
-            <li>May</li>
-            <li>Jun</li>
-            <li>Jul</li>
-            <li>Aug</li>
-            <li>Sep</li>
-            <li>Oct</li>
-            <li>Nov</li>
-            <li>Dec</li>
-          </ul>
-          <ul class="days">
-            <li>Sun</li>
-            <li>Mon</li>
-            <li>Tue</li>
-            <li>Wed</li>
-            <li>Thu</li>
-            <li>Fri</li>
-            <li>Sat</li>
-          </ul>
-          <ul class="squares">
-            {#each dates as date}
-              <!-- svelte-ignore a11y-click-events-have-key-events -->
-              <li
-                style="background-color: {getColorForSquare(date)};"
-                on:click={(event) => openDayDetailView(event, date)}
-              />
-            {/each}
-          </ul>
+        <div id="graph_container">
+          <div class="graph">
+            <ul class="months">
+              <li>Jan</li>
+              <li>Feb</li>
+              <li>Mar</li>
+              <li>Apr</li>
+              <li>May</li>
+              <li>Jun</li>
+              <li>Jul</li>
+              <li>Aug</li>
+              <li>Sep</li>
+              <li>Oct</li>
+              <li>Nov</li>
+              <li>Dec</li>
+            </ul>
+            <ul class="days">
+              <li>Sun</li>
+              <li>Mon</li>
+              <li>Tue</li>
+              <li>Wed</li>
+              <li>Thu</li>
+              <li>Fri</li>
+              <li>Sat</li>
+            </ul>
+            <ul class="squares">
+              {#each dates as date}
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <li
+                  style="background-color: {getColorForSquare(date)};"
+                  on:click={(event) => openDayDetailView(event, date)}
+                />
+              {/each}
+            </ul>
+          </div>
         </div>
 
         {#if currentlySelectedDate.date}
@@ -266,9 +268,7 @@
 
             <!-- Longest commit message -->
             <div class="stat_card full-width">
-              <h3>
-                Longest commit message
-              </h3>
+              <h3>Longest commit message</h3>
               <div class="stat_card_content">
                 <p>
                   "{fullStats.commitWithLongestMessage?.message}"
@@ -345,14 +345,41 @@
     }
   }
 
+  #graph_container {
+    display: flex;
+    justify-content: start;
+    overflow: scroll;
+  }
+
+  #graph_container::-webkit-scrollbar {
+    height: 2rem;
+  }
+
+  #graph_container::-webkit-scrollbar-thumb {
+    border: 12px solid rgba(0, 0, 0, 0);
+    background-clip: padding-box;
+    border-radius: 9999px;
+    background-color: #aaaaaa;
+  }
+
+  @media screen and (min-width: 1500px) {
+    #graph_container {
+      justify-content: center;
+    }
+
+    #graph_container::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
   .graph {
-    display: inline-grid;
+    display: grid;
     grid-template-areas:
       "empty months"
       "days squares";
     grid-template-columns: auto 1fr;
     grid-gap: 0.5rem;
-    padding: 2rem;
+    padding: 2rem 0 1rem 2rem;
   }
 
   .months {

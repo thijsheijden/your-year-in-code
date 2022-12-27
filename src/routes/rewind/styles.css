@@ -16,8 +16,16 @@ main {
   overflow: scroll;
 }
 
+#card::-webkit-scrollbar {
+  display: none;
+}
+
 #card_content {
   padding: 2rem;
+}
+
+#card_content::-webkit-scrollbar {
+  display: none;
 }
 
 #card_content_heading {
