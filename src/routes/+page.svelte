@@ -117,9 +117,10 @@
         </div>
         <div class="flex">
           <!-- svelte-ignore a11y-click-events-have-key-events -->
-          <a class="button" id="login_button" on:click={openOAuthWindow}>Log in using Github</a
+          <a class="button" id="login_button" on:click={openOAuthWindow}
+            >Log in using Github</a
           >
-          <a class="button" id="more_info_button" href="/info">How it works</a>
+          <a class="button" id="more_info_button" href="/how-it-works">How it works</a>
         </div>
         <h5 style="padding-top: 2em;">
           {#if score > 0}
