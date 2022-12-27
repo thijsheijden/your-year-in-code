@@ -58,6 +58,8 @@
   const moveToNextPage = (e: KeyboardEvent) => {
     if (e.key == "ArrowLeft") {
       goto("/rewind/commits");
+    } else if (e.key == "ArrowRight") {
+      goto("/rewind/thanks")
     }
   };
 </script>
@@ -75,7 +77,10 @@
           <h1 id="card_title">Pull requests</h1>
           <h2 class="card_subtitle">open, review, merge</h2>
         </div>
-        <div id="next_page" />
+        <div id="next_page">
+          <h2 class="card_subtitle">Next page: Thanks</h2>
+          <div class="kbd">&#8594;</div>
+        </div>
       </div>
 
       <!-- Wait for fullStats to be loaded from local storage -->
