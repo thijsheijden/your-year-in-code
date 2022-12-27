@@ -175,6 +175,7 @@
     gap: 1rem;
     overflow: scroll;
     padding: 3rem;
+    padding-bottom: 0.5rem;
 
     .pill {
       flex: 0 0 auto;
@@ -182,7 +183,14 @@
   }
 
   #repository_selector::-webkit-scrollbar {
-    display: none;
+    height: 4rem;
+  }
+
+  #repository_selector::-webkit-scrollbar-thumb {
+    border: 28px solid rgba(0, 0, 0, 0);
+    background-clip: padding-box;
+    border-radius: 9999px;
+    background-color: #aaaaaa;
   }
 
   .pill {
