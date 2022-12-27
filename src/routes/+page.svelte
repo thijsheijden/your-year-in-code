@@ -75,11 +75,12 @@
     const strWindowFeatures =
       "toolbar=no, menubar=no, width=600, height=700, top=100, left=100";
 
+    let githubClientID = "961ecc55299958adb91f"
     let url =
-      "https://github.com/login/oauth/authorize?client_id=961ecc55299958adb91f&scope=repo:status%20read:user";
+      `https://github.com/login/oauth/authorize?client_id=${githubClientID}&scope=repo:status%20read:user`;
     if (loadPrivateRepos) {
       url =
-        "https://github.com/login/oauth/authorize?client_id=961ecc55299958adb91f&scope=repo%20read:user";
+        `https://github.com/login/oauth/authorize?client_id=${githubClientID}&scope=repo%20read:user`;
     }
     window.open(url, "Github Oauth", strWindowFeatures);
 

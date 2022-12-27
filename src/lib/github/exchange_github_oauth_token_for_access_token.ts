@@ -5,9 +5,13 @@ export default function exchangeGithubOAuthTokenForAccessToken(
 ): Promise<string> {
   // Make a POST request to Github with the Oauth code to get an acccess token
   return new Promise((resolve, reject) => {
+    let url = "https://api.youryearincode.com/oauth?code=" + oauthToken;
+
+    // let githubClientID = "";
+    // let githubClientSecret = "";
+    // let url = `https://github.com/login/oauth/access_token?client_id=${githubClientID}&client_secret=${githubClientSecret}&code=${oauthToken}`
     fetch(
-      "https://api.youryearincode.com/oauth?code=" +
-      oauthToken,
+      url,
       {
         method: "POST",
         headers: {
