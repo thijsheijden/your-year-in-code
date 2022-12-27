@@ -170,31 +170,25 @@ async function getPRsForRepo(
             }
           }
 
-          if (pr.reviews) {
-            pr.reviews.map((review) => {
-              if (review.by_authenticated_user) {
-                repo.totalReviewedPRChanges += pr.total_changes;
-
-                const prReviewedDate = review.submittedAt.split("T")[0];
-                if (!repo.statsPerDate![prReviewedDate]) {
-                  repo.statsPerDate![prReviewedDate] = {
-                    commits: 0,
-                    additions: 0,
-                    deletions: 0,
-                    perLanguage: {},
-                    PRsCreated: 0,
-                    PRsMerged: 0,
-                    PRsReviewed: 0,
-                    commentsWritten: 0,
-                  };
-                }
-                repo.statsPerDate![prReviewedDate].PRsReviewed!++;
-              }
-            });
-          }
-
           pr.reviews?.map((review) => {
             if (review.by_authenticated_user) {
+              repo.totalReviewedPRChanges += pr.total_changes;
+
+              const prReviewedDate = review.submittedAt.split("T")[0];
+              if (!repo.statsPerDate![prReviewedDate]) {
+                repo.statsPerDate![prReviewedDate] = {
+                  commits: 0,
+                  additions: 0,
+                  deletions: 0,
+                  perLanguage: {},
+                  PRsCreated: 0,
+                  PRsMerged: 0,
+                  PRsReviewed: 0,
+                  commentsWritten: 0,
+                };
+              }
+              repo.statsPerDate![prReviewedDate].PRsReviewed!++;
+
               repo.totalPRsReviewed++;
 
               if (
@@ -212,19 +206,28 @@ async function getPRsForRepo(
               }
 
               // Check if this review has the longest or shortest comment
-              if (review.body.length > (repo.longestReviewLeft?.body.length ?? Number.MIN_SAFE_INTEGER)) {
+              if (
+                review.body.length >
+                (repo.longestReviewLeft?.body.length ?? Number.MIN_SAFE_INTEGER)
+              ) {
                 repo.longestReviewLeft = review;
                 repo.PRWithLongestReview = pr;
               }
-              if (review.body.length < (repo.shortestReviewLeft?.body.length ?? Number.MAX_SAFE_INTEGER)) {
+              if (
+                review.body.length <
+                (repo.shortestReviewLeft?.body.length ??
+                  Number.MAX_SAFE_INTEGER)
+              ) {
                 repo.shortestReviewLeft = review;
                 repo.PRWithShortestReview = pr;
               }
             } else {
-              switch (review.state) {
-                case "APPROVED":
-                  pr.approved = true;
-                  repo.PRsApproved++;
+              if (pr.created_by_user ?? false) {
+                switch (review.state) {
+                  case "APPROVED":
+                    pr.approved = true;
+                    repo.PRsApproved++;
+                }
               }
             }
           });
