@@ -135,8 +135,9 @@
                   <div>
                     <h3>Commits</h3>
                     <h4 style="color: var(--commit-color);">
-                      {fullStats.totalAdditionsAndDeletionsPerLanguage[language]
-                        .commits?.toLocaleString()}
+                      {fullStats.totalAdditionsAndDeletionsPerLanguage[
+                        language
+                      ].commits?.toLocaleString()}
                     </h4>
                   </div>
 
@@ -217,7 +218,7 @@
 
   #card_grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(1, 1fr);
     gap: 2rem;
   }
 
@@ -244,6 +245,20 @@
     display: flex;
     justify-content: space-evenly;
     align-items: center;
+    flex-direction: column;
     gap: 1rem;
+  }
+
+  @media screen and (min-width: 768px) {
+    #card_grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media screen and (min-width: 1200px) {
+
+    .stat_card_horizontal_flex {
+      flex-direction: row;
+    }
   }
 </style>
