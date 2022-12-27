@@ -135,7 +135,7 @@
           </svg></a
         >
 
-        <h5 style="padding-top: 2em;">
+        <h5 style="padding: 2rem;">
           {#if score > 0}
             Boxes destroyed: {score}
           {/if}
