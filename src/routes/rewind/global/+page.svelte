@@ -18,14 +18,14 @@
     }
   });
 
-  const moveToNextPage = (e: KeyboardEvent) => {
+  const handleKeyboardInput = (e: KeyboardEvent) => {
     if (e.key == "ArrowRight") {
       goto("/rewind/languages")
     }
   }
 </script>
 
-<svelte:window on:keydown={moveToNextPage}/>
+<svelte:window on:keydown={handleKeyboardInput}/>
 <main>
   <div id="card">
     <div id="card_content">

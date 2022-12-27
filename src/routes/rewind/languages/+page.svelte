@@ -75,7 +75,7 @@
     });
   };
 
-  const moveToNextPage = (e: KeyboardEvent) => {
+  const handleKeyboardInput = (e: KeyboardEvent) => {
     if (e.key == "ArrowRight") {
       goto("/rewind/commits");
     } else if (e.key == "ArrowLeft") {
@@ -84,7 +84,7 @@
   };
 </script>
 
-<svelte:window on:keydown={moveToNextPage} />
+<svelte:window on:keydown={handleKeyboardInput} />
 <main>
   <div id="card">
     <div id="card_content">

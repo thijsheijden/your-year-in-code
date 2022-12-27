@@ -55,7 +55,7 @@
 
   const openDayDetailView = (e: MouseEvent, date: string) => {};
 
-  const moveToNextPage = (e: KeyboardEvent) => {
+  const handleKeyboardInput = (e: KeyboardEvent) => {
     if (e.key == "ArrowLeft") {
       goto("/rewind/commits");
     } else if (e.key == "ArrowRight") {
@@ -64,7 +64,7 @@
   };
 </script>
 
-<svelte:window on:keydown={moveToNextPage} />
+<svelte:window on:keydown={handleKeyboardInput} />
 <main>
   <div id="card">
     <div id="card_content">

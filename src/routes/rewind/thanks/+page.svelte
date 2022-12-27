@@ -1,14 +1,14 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
 
-  const moveToNextPage = (e: KeyboardEvent) => {
+  const handleKeyboardInput = (e: KeyboardEvent) => {
     if (e.key == "ArrowLeft") {
       goto("/rewind/prs");
     }
   };
 </script>
 
-<svelte:window on:keydown={moveToNextPage} />
+<svelte:window on:keydown={handleKeyboardInput} />
 <main>
   <div id="card">
     <div id="card_content">
