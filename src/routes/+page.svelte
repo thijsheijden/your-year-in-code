@@ -116,6 +116,13 @@
             id=""
           />
         </div>
+
+        <!-- Private repo disclaimer -->
+        {#if loadPrivateRepos}
+          <h6>When loading private repo's read/write access is required due to the OAuth scopes Github offers.</h6>
+          <h6>For more info check out 'How it works'.</h6>
+        {/if}
+
         <div class="flex">
           <!-- svelte-ignore a11y-click-events-have-key-events -->
           <a class="button" id="login_button" on:click={openOAuthWindow}
