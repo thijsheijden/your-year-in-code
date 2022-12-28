@@ -233,8 +233,11 @@ async function getPRsForRepo(
               if (pr.created_by_user ?? false) {
                 switch (review.state) {
                   case "APPROVED":
-                    pr.approved = true;
-                    repo.PRsApproved++;
+                    // Only count a single approval per PR
+                    if (!pr.approved) {
+                      pr.approved = true;
+                      repo.PRsApproved++;
+                    }
                 }
               }
             }
