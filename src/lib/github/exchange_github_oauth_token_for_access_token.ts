@@ -1,4 +1,4 @@
-// exchangeGithubOAuthTokenForAccessToken exchanges the token received through the OAuth process for an 
+// exchangeGithubOAuthTokenForAccessToken exchanges the token received through the OAuth process for an
 // actual Github access token
 export default function exchangeGithubOAuthTokenForAccessToken(
   oauthToken: string
@@ -10,15 +10,12 @@ export default function exchangeGithubOAuthTokenForAccessToken(
     // let githubClientID = "";
     // let githubClientSecret = "";
     // let url = `https://github.com/login/oauth/access_token?client_id=${githubClientID}&client_secret=${githubClientSecret}&code=${oauthToken}`
-    fetch(
-      url,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-        },
-      }
-    )
+    fetch(url, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+      },
+    })
       .then((response: Response) => {
         if (!response.ok) {
           reject(response.statusText);
@@ -27,6 +24,6 @@ export default function exchangeGithubOAuthTokenForAccessToken(
       })
       .then((json: any) => {
         resolve(json.access_token);
-      });
+      })
   });
 }

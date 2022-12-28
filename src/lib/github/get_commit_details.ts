@@ -11,6 +11,7 @@ export default function getCommitDetails(
   repository: Repository,
   sha: string,
 ): Promise<Commit> {
+  console.log(`Getting commit details for commit '${sha} in repository '${repository.name}''`)
   return new Promise<Commit>((resolve, reject) => {
     client.rest.repos
       .getCommit({
@@ -33,8 +34,11 @@ export default function getCommitDetails(
           if (f.additions == 0 && f.deletions == 0) return;
 
           // Get file extensions
-          const fileNameAndExtension: Array<string> = f.filename.split(".");
-          if (fileNameAndExtension.length == 1) return;
+          let fileNameAndExtension: Array<string> = ["unknown"]
+          if (f.filename != undefined) {
+            fileNameAndExtension = f.filename.split(".");
+            if (fileNameAndExtension.length == 1) return;
+          }
 
           // Grab the extension from the filename + extension list
           const fileExtension = fileNameAndExtension.pop();

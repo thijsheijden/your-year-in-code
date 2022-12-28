@@ -9,6 +9,8 @@ const getActiveRepos = (client: Octokit): Promise<Array<Repository>> => {
     const date = new Date();
     date.setFullYear(date.getFullYear() - 1);
 
+    console.log(`Getting repositories user was active in in the last year`)
+
     // Get the repos the user contributed to
     client
       .paginate(client.rest.repos.listForAuthenticatedUser, {since: date.toISOString()})

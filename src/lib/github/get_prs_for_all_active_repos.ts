@@ -13,6 +13,7 @@ export default function getPRsForAllActiveRepos(
   user: string,
   activeRepos: Repository[]
 ): Promise<Repository[]> {
+  console.log(`Getting PR's for repositories user was active in`);
   return new Promise<Repository[]>((resolve, reject) => {
     Promise.all(activeRepos.map((r) => getPRsForRepo(client, user, r))).then(
       (repos: Repository[]) => {
@@ -30,6 +31,8 @@ async function getPRsForRepo(
   // Get date of 1 year ago
   const date = new Date();
   date.setFullYear(date.getFullYear() - 1);
+
+  console.log(`Getting PR's for repository '${repo.name}'`);
 
   return new Promise<Repository>((resolve, reject) => {
     client
@@ -174,52 +177,57 @@ async function getPRsForRepo(
             if (review.by_authenticated_user) {
               repo.totalReviewedPRChanges += pr.total_changes;
 
-              const prReviewedDate = review.submittedAt.split("T")[0];
-              if (!repo.statsPerDate![prReviewedDate]) {
-                repo.statsPerDate![prReviewedDate] = {
-                  commits: 0,
-                  additions: 0,
-                  deletions: 0,
-                  perLanguage: {},
-                  PRsCreated: 0,
-                  PRsMerged: 0,
-                  PRsReviewed: 0,
-                  commentsWritten: 0,
-                };
-              }
-              repo.statsPerDate![prReviewedDate].PRsReviewed!++;
+              // Ignore PR's that are have not been submitted
+              if (review.state != "PENDING") {
+                const prReviewedDate = review.submittedAt.split("T")[0];
+                if (!repo.statsPerDate![prReviewedDate]) {
+                  repo.statsPerDate![prReviewedDate] = {
+                    commits: 0,
+                    additions: 0,
+                    deletions: 0,
+                    perLanguage: {},
+                    PRsCreated: 0,
+                    PRsMerged: 0,
+                    PRsReviewed: 0,
+                    commentsWritten: 0,
+                  };
+                }
+                repo.statsPerDate![prReviewedDate].PRsReviewed!++;
 
-              repo.totalPRsReviewed++;
+                repo.totalPRsReviewed++;
 
-              if (
-                pr.total_changes > (repo.largestPRReviewed?.total_changes ?? 0)
-              ) {
-                repo.largestPRReviewed = pr;
-              }
+                if (
+                  pr.total_changes >
+                  (repo.largestPRReviewed?.total_changes ?? 0)
+                ) {
+                  repo.largestPRReviewed = pr;
+                }
 
-              if (
-                pr.total_changes <
-                (repo.smallestPRReviewed?.total_changes ??
-                  Number.MAX_SAFE_INTEGER)
-              ) {
-                repo.smallestPRReviewed = pr;
-              }
+                if (
+                  pr.total_changes <
+                  (repo.smallestPRReviewed?.total_changes ??
+                    Number.MAX_SAFE_INTEGER)
+                ) {
+                  repo.smallestPRReviewed = pr;
+                }
 
-              // Check if this review has the longest or shortest comment
-              if (
-                review.body.length >
-                (repo.longestReviewLeft?.body.length ?? Number.MIN_SAFE_INTEGER)
-              ) {
-                repo.longestReviewLeft = review;
-                repo.PRWithLongestReview = pr;
-              }
-              if (
-                review.body.length <
-                (repo.shortestReviewLeft?.body.length ??
-                  Number.MAX_SAFE_INTEGER)
-              ) {
-                repo.shortestReviewLeft = review;
-                repo.PRWithShortestReview = pr;
+                // Check if this review has the longest or shortest comment
+                if (
+                  review.body.length >
+                  (repo.longestReviewLeft?.body.length ??
+                    Number.MIN_SAFE_INTEGER)
+                ) {
+                  repo.longestReviewLeft = review;
+                  repo.PRWithLongestReview = pr;
+                }
+                if (
+                  review.body.length <
+                  (repo.shortestReviewLeft?.body.length ??
+                    Number.MAX_SAFE_INTEGER)
+                ) {
+                  repo.shortestReviewLeft = review;
+                  repo.PRWithShortestReview = pr;
+                }
               }
             } else {
               if (pr.created_by_user ?? false) {
@@ -233,6 +241,13 @@ async function getPRsForRepo(
           });
         });
 
+        resolve(repo);
+      })
+      .catch((rejectionReason) => {
+        console.error(
+          "Error while getting PR's for all active repos: ",
+          rejectionReason
+        );
         resolve(repo);
       });
   });

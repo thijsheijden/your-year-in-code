@@ -14,6 +14,7 @@ export default function getCommitDetailsForRepo(
 ): Promise<Repository> {
   return new Promise<Repository>((resolve, reject) => {
     // Go over all commit SHAs and fetch the details
+    console.log(`Getting commit details for repo '${repo.name}'`)
     Promise.all(
       repo.commitSHAs!.map((sha: string) => getCommitDetails(client, repo, sha))
     ).then((commits: Array<Commit>) => {

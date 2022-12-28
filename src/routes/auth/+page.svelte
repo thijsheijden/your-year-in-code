@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { onMount } from "svelte";
   import exchangeGithubOAuthTokenForAccessToken from "$lib/github/exchange_github_oauth_token_for_access_token";
 
@@ -17,8 +17,14 @@
     }
 
     const getAccessToken = async () => {
-      const accessToken = await exchangeGithubOAuthTokenForAccessToken(code ?? "");
-
+      let accessToken: string = "";
+      try {
+        accessToken = await exchangeGithubOAuthTokenForAccessToken(code ?? "");
+      } catch (error: any) {
+        console.error("Error while trying to exchange Github code for an access token: ", error.stack)
+        return
+      }
+    
       console.log(accessToken);
       if (window.opener) {
         // Send the params to the parent window

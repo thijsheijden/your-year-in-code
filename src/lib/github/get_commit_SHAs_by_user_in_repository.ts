@@ -12,6 +12,8 @@ export default function getCommitSHAsByUserInRepository(
   const date = new Date();
   date.setFullYear(date.getFullYear() - 1);
 
+  console.log(`Getting commit SHA's for commits made by '${user}' in repository '${repository.name}'`)
+
   // Fetch all commits the user has made in that repository in the past year
   return new Promise<Repository>((resolve, reject) => {
     client

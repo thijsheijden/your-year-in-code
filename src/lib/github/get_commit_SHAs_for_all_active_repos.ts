@@ -10,6 +10,7 @@ export default function getCommitSHAsForAllActiveRepos(
   user: string,
   activeRepos: Array<Repository>
 ): Promise<Array<Repository>> {
+  console.log(`Getting commit SHA's for all repositories`)
   return new Promise<Array<Repository>>((resolve, reject) => {
     Promise.all(
       activeRepos.map((r) => getCommitSHAsByUserInRepository(client, user, r))
